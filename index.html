@@ -10,6 +10,19 @@
     <script type="text/javascript">
       var eCanvas = document.getElementsByTagName("canvas")[0]
       var ctx = eCanvas.getContext("2d")
+
+      ctx.fillText("Ola mundo!", 10, 10)
+
+      ctx.fillStyle = "blue"
+      ctx.fillRect(20, 50, 15, 15)
+      ctx.lineWidth = 4
+      ctx.strokeRect(20, 50, 15, 15)
+
+      ctx.fillStyle = "red"
+      ctx.fillRect(50, 50, 15, 15)
+      ctx.strokeStyle = "yellow"
+      ctx.strokeRect(50, 50, 15, 15)
+
     </script>
   </body>
 </html>
