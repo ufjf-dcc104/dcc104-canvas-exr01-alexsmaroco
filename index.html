@@ -13,15 +13,36 @@
 
       ctx.fillText("Ola mundo!", 10, 10)
 
-      ctx.fillStyle = "blue"
-      ctx.fillRect(20, 50, 15, 15)
-      ctx.lineWidth = 4
-      ctx.strokeRect(20, 50, 15, 15)
+      var azul = {
+        x:10,
+        y:50
+      }
 
-      ctx.fillStyle = "red"
-      ctx.fillRect(50, 50, 15, 15)
-      ctx.strokeStyle = "yellow"
-      ctx.strokeRect(50, 50, 15, 15)
+      var fps = 60
+      var dt = 1/fps
+
+      setInterval(desenha, 1000/fps)
+
+      function desenha() {
+        ctx.clearRect(0,0,eCanvas.width, eCanvas.height)
+        azul.x += 10*dt
+        desenhaAzul(ctx)
+        desenhaVermelho(ctx)
+      }
+
+      function desenhaAzul(ctx) {
+        ctx.fillStyle = "blue"
+        ctx.fillRect(azul.x, azul.y, 15, 15)
+        ctx.lineWidth = 2
+        ctx.strokeRect(azul.x, azul.y, 15, 15)
+      }
+
+      function desenhaVermelho(ctx) {
+        ctx.fillStyle = "red"
+        ctx.fillRect(50, 50, 15, 15)
+        //ctx.strokeStyle = "yellow"
+        ctx.strokeRect(50, 50, 15, 15)
+      }
 
     </script>
   </body>
