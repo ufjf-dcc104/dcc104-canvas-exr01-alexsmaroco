@@ -38,6 +38,10 @@
         ctx.fillStyle = "green"
         ctx.fillText("dt: " + dt + " fps: " + Math.floor(1/dt), 10, 10)
 
+        //plataforma de pouso
+        ctx.fillStyle = "red"
+        ctx.fillRect(200,200, 25,5)
+
         if(acelerandoX) {
           fuel-=5*dt
         }
@@ -47,9 +51,9 @@
         }
 
         azul.mover(dt)
-        vermelho.mover(dt)
+        //vermelho.mover(dt)
         azul.desenhar(ctx)
-        vermelho.desenhar(ctx)
+        //vermelho.desenhar(ctx)
 
         ctx.fillStyle = "green"
         ctx.fillRect(100,0,fuel+2,10)
