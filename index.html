@@ -12,7 +12,7 @@
       var eCanvas = document.getElementsByTagName("canvas")[0]
       var ctx = eCanvas.getContext("2d")
 
-
+      var fuel = 100
       var azul = new Sprite("blue", 15, 15)
       var vermelho = new Sprite("red", 285, 285)
       var atual = new Date()
@@ -20,6 +20,8 @@
 
       var fps = 60
       var dt = 1/fps
+      var acelerandoX = false
+      var acelerandoY = false
 
 
       desenha()
@@ -32,13 +34,35 @@
         dt = (atual - anterior)/1000
 
         ctx.clearRect(0,0,eCanvas.width, eCanvas.height)
+        ctx.strokeRect(0,0,eCanvas.width, eCanvas.height)
         ctx.fillStyle = "green"
         ctx.fillText("dt: " + dt + " fps: " + Math.floor(1/dt), 10, 10)
+
+        if(acelerandoX) {
+          fuel-=5*dt
+        }
+
+        if(acelerandoY) {
+          fuel-=15*dt
+        }
+
         azul.mover(dt)
         vermelho.mover(dt)
         azul.desenhar(ctx)
         vermelho.desenhar(ctx)
 
+        ctx.fillStyle = "green"
+        ctx.fillRect(100,0,fuel+2,10)
+
+        if(azul.y > 300 || azul.y < 0 || azul.x > 300 || azul.x < 0) {
+          azul.y = 15
+          azul.x = 15
+          azul.vx = 0
+          azul.vy = 0
+          azul.ax = 0
+          azul.ay = 0
+          fuel = 100
+        }
 
         anterior = atual
       }
@@ -47,17 +71,32 @@
         console.log(e.keyCode)
         switch(e.keyCode) {
             case 37:
-              azul.ax = -100
+              if(fuel > 0) {
+                acelerandoX = true
+                azul.ax = -100
+              }
               break;
             case 38:
-              azul.ay = -100
+              if(fuel > 0) {
+                acelerandoY = true
+                azul.ay = -100
+              }
               break;
             case 39:
-              azul.ax = 100
+              if(fuel > 0) {
+                acelerandoX = true
+                azul.ax = 100
+              }
               break;
             case 40:
-              azul.ay = 100
+              if(fuel > 0) {
+                acelerandoY = true
+                azul.ay = 100
+              }
               break;
+            /*case 32:
+              azul.vy = -40
+              break;*/
             default:
           }
       })
@@ -66,15 +105,19 @@
         console.log(e.keyCode)
         switch(e.keyCode) {
             case 37:
+              acelerandoX = false
               azul.ax = 0
               break;
             case 38:
+              acelerandoY = false
               azul.ay = 0
               break;
             case 39:
+              acelerandoX = false
               azul.ax = 0
               break;
             case 40:
+              acelerandoY = false
               azul.ay = 0
               break;
             default:
