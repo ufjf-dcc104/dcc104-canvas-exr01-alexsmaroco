@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8">
     <title>DCC104 - Exemplo 01</title>
+    <script src="sprite.js" charset="utf-8"></script>
   </head>
   <body>
     <h1> DCC104 - Exemplo 01 </h1>
@@ -13,10 +14,8 @@
 
 
 
-      var azul = {
-        x:10,
-        y:50
-      }
+      var azul = new Sprite("blue", 15, 15)
+      var vermelho = new Sprite("red", 285, 285)
       var atual = new Date()
       var anterior = new Date()
 
@@ -36,27 +35,52 @@
         ctx.clearRect(0,0,eCanvas.width, eCanvas.height)
         ctx.fillStyle = "green"
         ctx.fillText("dt: " + dt + " fps: " + Math.floor(1/dt), 10, 10)
-        azul.x += 10*dt
-        azul.y += 5*dt
-        desenhaAzul(ctx)
-        desenhaVermelho(ctx)
+        azul.mover(dt)
+        vermelho.mover(dt)
+        azul.desenhar(ctx)
+        vermelho.desenhar(ctx)
+
 
         anterior = atual
       }
 
-      function desenhaAzul(ctx) {
-        ctx.fillStyle = "blue"
-        ctx.fillRect(azul.x, azul.y, 15, 15)
-        ctx.lineWidth = 2
-        ctx.strokeRect(azul.x, azul.y, 15, 15)
-      }
+      addEventListener("keydown", function(e) {
+        console.log(e.keyCode)
+        switch(e.keyCode) {
+            case 37:
+              azul.vx = -100
+              break;
+            case 38:
+              azul.vy = -100
+              break;
+            case 39:
+              azul.vx = 100
+              break;
+            case 40:
+              azul.vy = 100
+              break;
+            default:
+          }
+      })
 
-      function desenhaVermelho(ctx) {
-        ctx.fillStyle = "red"
-        ctx.fillRect(50, 50, 15, 15)
-        //ctx.strokeStyle = "yellow"
-        ctx.strokeRect(50, 50, 15, 15)
-      }
+      addEventListener("keyup", function(e) {
+        console.log(e.keyCode)
+        switch(e.keyCode) {
+            case 37:
+              azul.vx = 0
+              break;
+            case 38:
+              azul.vy = 0
+              break;
+            case 39:
+              azul.vx = 0
+              break;
+            case 40:
+              azul.vy = 0
+              break;
+            default:
+          }
+      })
 
     </script>
   </body>
