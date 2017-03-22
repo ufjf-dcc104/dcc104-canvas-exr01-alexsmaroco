@@ -13,7 +13,6 @@
       var ctx = eCanvas.getContext("2d")
 
 
-
       var azul = new Sprite("blue", 15, 15)
       var vermelho = new Sprite("red", 285, 285)
       var atual = new Date()
@@ -48,16 +47,16 @@
         console.log(e.keyCode)
         switch(e.keyCode) {
             case 37:
-              azul.vx = -100
+              azul.ax = -100
               break;
             case 38:
-              azul.vy = -100
+              azul.ay = -100
               break;
             case 39:
-              azul.vx = 100
+              azul.ax = 100
               break;
             case 40:
-              azul.vy = 100
+              azul.ay = 100
               break;
             default:
           }
@@ -67,16 +66,16 @@
         console.log(e.keyCode)
         switch(e.keyCode) {
             case 37:
-              azul.vx = 0
+              azul.ax = 0
               break;
             case 38:
-              azul.vy = 0
+              azul.ay = 0
               break;
             case 39:
-              azul.vx = 0
+              azul.ax = 0
               break;
             case 40:
-              azul.vy = 0
+              azul.ay = 0
               break;
             default:
           }
