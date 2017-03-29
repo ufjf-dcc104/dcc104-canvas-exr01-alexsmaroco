@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <title>DCC104 - Exemplo 01</title>
     <script src="sprite.js" charset="utf-8"></script>
+    <script src="level.js" charset="utf-8"></script>
   </head>
   <body>
     <h1> DCC104 - Exemplo 01 </h1>
@@ -13,23 +14,29 @@
       var ctx = eCanvas.getContext("2d")
 
       var fuel = 100
-      var azul = new Sprite("blue", 15, 15)
-      var vermelho = new Sprite("red", 285, 285)
+      //var azul = new Sprite("blue", 15, 15)
+      //var vermelho = new Sprite("red", 285, 285)
       var atual = new Date()
       var anterior = new Date()
+
+      var level = new level()
+      var azul = new Sprite()
+      azul.x = 20
+      azul.y = 50
+      level.iniciar()
 
       var fps = 60
       var dt = 1/fps
       var acelerandoX = false
       var acelerandoY = false
-	  
+      /*
 	  var plataforma = {
 		x: 200,
 		y: 200,
 		largura:5,
 		comprimento:25
 	  }
-
+    */
 
       desenha()
 
@@ -44,7 +51,7 @@
         ctx.strokeRect(0,0,eCanvas.width, eCanvas.height)
         ctx.fillStyle = "green"
         ctx.fillText("dt: " + dt + " fps: " + Math.floor(1/dt), 10, 10)
-
+        /*
         //plataforma de pouso
         ctx.fillStyle = "red"
         ctx.fillRect(plataforma.x, plataforma.y, plataforma.comprimento, plataforma.largura)
@@ -56,14 +63,32 @@
         if(acelerandoY) {
           fuel-=10*dt
         }
+        */
+
+        level.perseguir(azul,dt)
+
+        level.mover(dt)
 
         azul.mover(dt)
 
-        azul.desenhar(ctx)
+        level.colidiuCom(azul, function(inimigo, alvo) {
+          inimigo.cor = "red"
+        })
+        /*
+        if(azul.colidiuCom(level.sprites[0])) {
+          level.sprites[0].cor = "red"
+        } else {
+          level.sprites[0].cor = "blue"
+        }
+        */
+        console.log(azul.x + " " +  azul.y)
+        level.desenhar(ctx)
 
+        azul.desenhar(ctx)
+        /*
         ctx.fillStyle = "green"
         ctx.fillRect(100,0,fuel+2,10)
-
+        */
         if(azul.y > 300 || azul.y < 0 || azul.x > 300 || azul.x < 0) {
           azul.y = 15
           azul.x = 15
@@ -71,11 +96,12 @@
           azul.vy = 0
           azul.ax = 0
           azul.ay = 0
-          fuel = 100
+          //fuel = 100
         }
-		
-		if((azul.x >= plataforma.x && azul.x <= (plataforma.x+plataforma.comprimento)) && ((azul.y+azul.larg*0.5) >= (plataforma.y-plataforma.largura*0.5) && (azul.y-azul.larg*0.5) <= (plataforma.y+plataforma.largura*0.5))) {
-			if(azul.vx < 10 && azul.vy < 10) {
+
+      /*
+		if((azul.x >= plataforma.x && azul.x <= (plataforma.x+plataforma.comprimento)) && ((azul.y+azul.larg) >= (plataforma.y-plataforma.largura*0.5) && (azul.y-azul.larg) <= (plataforma.y+plataforma.largura))) {
+			if(azul.vx < 10 && azul.vy < 20) {
 				console.log("Pousou")
 				azul.podeMover = false
 			}
@@ -84,12 +110,12 @@
 				azul.podeMover = false
 			}
 		}
-
+    */
         anterior = atual
       }
 
       addEventListener("keydown", function(e) {
-        console.log(e.keyCode)
+        //console.log(e.keyCode)
         switch(e.keyCode) {
             case 37:
               if(fuel > 0) {
@@ -123,7 +149,7 @@
       })
 
       addEventListener("keyup", function(e) {
-        console.log(e.keyCode)
+        //console.log(e.keyCode)
         switch(e.keyCode) {
             case 37:
               acelerandoX = false
