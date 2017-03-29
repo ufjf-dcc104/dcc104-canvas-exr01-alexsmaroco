@@ -22,6 +22,13 @@
       var dt = 1/fps
       var acelerandoX = false
       var acelerandoY = false
+	  
+	  var plataforma = {
+		x: 200,
+		y: 200,
+		largura:5,
+		comprimento:25
+	  }
 
 
       desenha()
@@ -40,20 +47,19 @@
 
         //plataforma de pouso
         ctx.fillStyle = "red"
-        ctx.fillRect(200,200, 25,5)
+        ctx.fillRect(plataforma.x, plataforma.y, plataforma.comprimento, plataforma.largura)
 
         if(acelerandoX) {
           fuel-=5*dt
         }
 
         if(acelerandoY) {
-          fuel-=15*dt
+          fuel-=10*dt
         }
 
         azul.mover(dt)
-        //vermelho.mover(dt)
+
         azul.desenhar(ctx)
-        //vermelho.desenhar(ctx)
 
         ctx.fillStyle = "green"
         ctx.fillRect(100,0,fuel+2,10)
@@ -67,6 +73,17 @@
           azul.ay = 0
           fuel = 100
         }
+		
+		if((azul.x >= plataforma.x && azul.x <= (plataforma.x+plataforma.comprimento)) && ((azul.y+azul.larg*0.5) >= (plataforma.y-plataforma.largura*0.5) && (azul.y-azul.larg*0.5) <= (plataforma.y+plataforma.largura*0.5))) {
+			if(azul.vx < 10 && azul.vy < 10) {
+				console.log("Pousou")
+				azul.podeMover = false
+			}
+			else {
+				console.log("Colidiu")
+				azul.podeMover = false
+			}
+		}
 
         anterior = atual
       }
