@@ -13,6 +13,7 @@ function Sprite() {
   this.angle = 0
   this.vAng = 0
   this.am = 0
+  this.cooldown = 0
 }
 /*
 function Sprite(cor,x,y) {
@@ -61,6 +62,12 @@ Sprite.prototype.mover = function(dt) {
 	this.x = this.x + this.vx*dt
 	this.y = this.y + this.vy*dt
   this.angle = this.angle + this.vAng*dt
+
+  if(this.cooldown > 0) {
+    this.cooldown-=dt
+  } else {
+    this.cooldown = 0
+  }
   }
 }
 
@@ -75,6 +82,11 @@ Sprite.prototype.moverAng = function(dt) {
     this.vy = this.vy + this.ay*dt
 	  this.x = this.x + this.vx*dt
 	  this.y = this.y + this.vy*dt
+    if(this.cooldown > 0) {
+      this.cooldown-=dt
+    } else {
+      this.cooldown = 0
+    }
 
   }
 }

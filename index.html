@@ -22,7 +22,7 @@
       var level = new level()
       var azul = new Sprite()
       azul.x = 20
-      azul.y = 50
+      azul.y = 250
       level.iniciar()
 
       var fps = 60
@@ -67,13 +67,15 @@
 
         //level.perseguirA(azul,dt)
         level.perseguirAng(azul,dt)
-        level.mover(dt)
+        level.moverAng(dt)
 
         azul.moverAng(dt)
 
         level.colidiuCom(azul, function(inimigo, alvo) {
           inimigo.cor = "red"
         })
+
+        level.colidiuComTiros()
         /*
         if(azul.colidiuCom(level.sprites[0])) {
           level.sprites[0].cor = "red"
@@ -117,6 +119,12 @@
       addEventListener("keydown", function(e) {
         //console.log(e.keyCode)
         switch(e.keyCode) {
+            case 32:
+              if(azul.cooldown == 0) {
+                level.fire(azul)
+              }
+              break;
+
             case 37:
               if(fuel > 0) {
                 acelerandoX = true
