@@ -65,11 +65,11 @@
         }
         */
 
-        level.perseguir(azul,dt)
-
+        //level.perseguirA(azul,dt)
+        level.perseguirAng(azul,dt)
         level.mover(dt)
 
-        azul.mover(dt)
+        azul.moverAng(dt)
 
         level.colidiuCom(azul, function(inimigo, alvo) {
           inimigo.cor = "red"
@@ -120,25 +120,34 @@
             case 37:
               if(fuel > 0) {
                 acelerandoX = true
-                azul.ax = -100
+                //azul.ax = -100
+                //azul.vAng = 100
+                azul.am = -20
               }
               break;
             case 38:
               if(fuel > 0) {
                 acelerandoY = true
-                azul.ay = -100
+                //azul.ay = -100
+                azul.vAng = -100
+
               }
               break;
             case 39:
               if(fuel > 0) {
                 acelerandoX = true
-                azul.ax = 100
+                //azul.ax = 100
+                //azul.am = 20
+                //azul.vAng = -100
+                azul.am = 20
               }
               break;
             case 40:
               if(fuel > 0) {
                 acelerandoY = true
-                azul.ay = 100
+                //azul.ay = 100
+                //azul.am = 20
+                azul.vAng = 100
               }
               break;
             /*case 32:
@@ -153,19 +162,23 @@
         switch(e.keyCode) {
             case 37:
               acelerandoX = false
-              azul.ax = 0
+              //azul.ax = 0
+              azul.am = 0
               break;
             case 38:
               acelerandoY = false
-              azul.ay = 0
+              //azul.ay = 0
+              azul.vAng = 0
               break;
             case 39:
               acelerandoX = false
-              azul.ax = 0
+              //azul.ax = 0
+              azul.am = 0
               break;
             case 40:
               acelerandoY = false
-              azul.ay = 0
+              //azul.ay = 0
+              azul.vAng = 0
               break;
             default:
           }

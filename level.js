@@ -11,8 +11,8 @@ level.prototype.iniciar = function() {
     inimigo.largura = 10+i*5
     inimigo.altura = 10+i*5
     inimigo.cor = "green"
-    inimigo.podeMover = false
-    inimigo.vAng = 30+30*i
+    inimigo.podeMover = true
+    inimigo.vAng = 60+30*i
     this.sprites.push(inimigo)
   }
 }
@@ -42,5 +42,11 @@ level.prototype.colidiuCom = function(alvo, resolveColisao) {
 level.prototype.perseguir = function(alvo, dt) {
   for(i=0; i<this.sprites.length; i++) {
     this.sprites[i].perseguir(alvo,dt)
+  }
+}
+
+level.prototype.perseguirAng = function(alvo, dt) {
+  for(i=0; i<this.sprites.length; i++) {
+    this.sprites[i].perseguirAng(alvo,dt)
   }
 }
