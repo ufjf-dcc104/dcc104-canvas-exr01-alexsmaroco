@@ -1,5 +1,5 @@
 
-function Sprite(cor,x,y,stroke) {
+function Sprite(cor,x,y) {
   this.x = x
   this.y = y
   this.altura = 15
@@ -10,7 +10,6 @@ function Sprite(cor,x,y,stroke) {
   this.ay = 0
   this.grav = 30
   this.cor = cor
-  this.stroke = stroke
   this.podeMover = true
 }
 
