@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <title>DCC104 - Moonlander</title>
     <script src="sprite.js" charset="utf-8"></script>
+	<script src="level.js" charset="utf-8"></script>
   </head>
   <body>
     <h1> DCC104 - Moonlander </h1>
@@ -14,7 +15,7 @@
       var ctx = eCanvas.getContext("2d")
 
       var fuel = 100
-      var azul = new Sprite("blue", 15, 15, true)
+      var azul = new Sprite("blue", 15, 15)
       var atual = new Date()
       var anterior = new Date()
 
@@ -23,29 +24,9 @@
       var acelerandoX = false
       var acelerandoY = false
 	  
-	  var plataformaPouso = new Sprite("green", 200, 200, true)
-	  plataformaPouso.largura = 25
-	  plataformaPouso.altura = 5
-	  plataformaPouso.grav = 0
-	  plataformaPouso.podeMover = false
-	  
-	  var paredes = []
-	  var parede1 = new Sprite("red", 175, 150, true)
-	  parede1.largura = 5
-	  parede1.altura = 50
-	  parede1.grav = 0
-	  parede1.vy = 20
-	  parede1.podeMover = true
-	  paredes.push(parede1)
-	  var parede2 = new Sprite("red", 225, 150, true)
-	  parede2.largura = 5
-	  parede2.altura = 50
-	  parede2.grav = 0
-	  parede2.vy = -20
-	  parede2.podeMover = true
-	  paredes.push(parede2)
-	  
+	  var level = new level()
 
+	  level.iniciar()
       desenha()
 
       function desenha() {
@@ -75,70 +56,24 @@
         }
 
         azul.mover(dt)
-
-		for(i=0;i<paredes.length;i++) {
-			if(paredes[i].y < 100 || paredes[i].y > 225) {
-				paredes[i].vy = -paredes[i].vy
-			}
-			paredes[i].mover(dt)
-		}
 		
-		plataformaPouso.mover(dt)
+		level.mover(dt)
+		
+		var fim = level.colisoes(azul,ctx)
+		if(fim) {
+			level.pararMov()
+			azul.podeMover = false
+		}
 		
         azul.desenhar(ctx)
 		
+		level.desenhar(ctx)
 		
-		plataformaPouso.desenhar(ctx)
-		
-		for(i=0;i<paredes.length;i++) {
-			paredes[i].desenhar(ctx)
-		}
-		
-
-		/* mantem a nave na tela */
-        if(azul.y > 300 || azul.y < 0 || azul.x > 300 || azul.x < 0) {
-          fim(false)
-        }
-		
-		if(azul.colidiuCom(plataformaPouso)) {
-			if(azul.vx < 10 && azul.vy < 20 && azul.vy > 0) { // vy > 0 para evitar pouso em baixo da plataforma
-				fim(true)
-			}
-			else {
-				fim(false)
-				
-			}
-		}
-		
-		for(i=0;i<paredes.length;i++) {
-			if(azul.colidiuCom(paredes[i])) {
-				fim(false)
-			}
-		}
         anterior = atual
       }
 	  
-	  function fim(vitoria) {
-		azul.podeMover = false
-		plataformaPouso.podeMover = false
-		for(i=0;i<paredes.length;i++) {
-			paredes[i].podeMover = false
-		}
-
-		if(vitoria) {
-			console.log("Pousou com segurança!")
-			ctx.fillStyle = "blue"
-			ctx.fillText("Parabéns! Pousou com segurança", 10, 30)
-		} else {
-			console.log("Colidiu!")
-			ctx.fillStyle = "red"
-			ctx.fillText("Ops! Houve uma colisão", 10, 30)
-		}
-		
-	  }
-
+	  
       addEventListener("keydown", function(e) {
-        console.log(e.keyCode)
         switch(e.keyCode) {
             case 37:
               if(fuel > 0) {
@@ -164,15 +99,12 @@
                 azul.ay = 100
               }
               break;
-            /*case 32:
-              azul.vy = -40
-              break;*/
+			  
             default:
           }
       })
 
       addEventListener("keyup", function(e) {
-        console.log(e.keyCode)
         switch(e.keyCode) {
             case 37:
               acelerandoX = false
