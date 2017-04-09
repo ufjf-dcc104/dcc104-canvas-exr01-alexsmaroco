@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>DCC104 - Moonlander</title>
+    <script src="sprite.js" charset="utf-8"></script>
+  </head>
+  <body>
+    <h1> DCC104 - Moonlander </h1>
+	<h3> Pouse na plataforma verde, sem encostar nas paredes vermelhas! </h3>
+    <canvas id="canvas" width="300" height="300"></canvas>
+    <script type="text/javascript">
+      var eCanvas = document.getElementsByTagName("canvas")[0]
+      var ctx = eCanvas.getContext("2d")
+
+      var fuel = 100
+      var azul = new Sprite("blue", 15, 15, true)
+      //var vermelho = new Sprite("red", 285, 285)
+      var atual = new Date()
+      var anterior = new Date()
+
+      var fps = 60
+      var dt = 1/fps
+      var acelerandoX = false
+      var acelerandoY = false
+	  
+	  var plataformaPouso = new Sprite("green", 200, 200, true)
+	  plataformaPouso.largura = 25
+	  plataformaPouso.altura = 5
+	  plataformaPouso.grav = 0
+	  plataformaPouso.vx = 10
+	  plataformaPouso.podeMover = false
+	  
+	  var paredes = []
+	  var parede1 = new Sprite("red", 175, 150, true)
+	  parede1.largura = 5
+	  parede1.altura = 50
+	  parede1.grav = 0
+	  parede1.vy = 20
+	  parede1.podeMover = true
+	  paredes.push(parede1)
+	  var parede2 = new Sprite("red", 225, 150, true)
+	  parede2.largura = 5
+	  parede2.altura = 50
+	  parede2.grav = 0
+	  parede2.vy = -20
+	  parede2.podeMover = true
+	  paredes.push(parede2)
+	  
+
+      desenha()
+
+      function desenha() {
+
+        requestAnimationFrame(desenha)
+
+        atual = new Date()
+        dt = (atual - anterior)/1000
+
+        ctx.clearRect(0,0,eCanvas.width, eCanvas.height)
+        ctx.strokeRect(0,0,eCanvas.width, eCanvas.height)
+        ctx.fillStyle = "green"
+        ctx.fillText("dt: " + dt + " fps: " + Math.floor(1/dt), 10, 10)
+
+        if(acelerandoX) {
+          fuel-=5*dt
+        }
+
+        if(acelerandoY) {
+          fuel-=10*dt
+        }
+
+        azul.mover(dt)
+		/*
+		if(plataformaPouso.x > 225 || plataformaPouso.x < 175) {
+			plataformaPouso.vx = -plataformaPouso.vx
+		}
+		*/
+		for(i=0;i<paredes.length;i++) {
+			if(paredes[i].y < 100 || paredes[i].y > 225) {
+				paredes[i].vy = -paredes[i].vy
+			}
+			paredes[i].mover(dt)
+		}
+		
+		plataformaPouso.mover(dt)
+		
+        azul.desenhar(ctx)
+		
+		
+		plataformaPouso.desenhar(ctx)
+		
+		for(i=0;i<paredes.length;i++) {
+			paredes[i].desenhar(ctx)
+		}
+
+        ctx.fillStyle = "green"
+        ctx.fillRect(100,0,fuel+2,10)
+
+		/* mantem a nave na tela */
+        if(azul.y > 300 || azul.y < 0 || azul.x > 300 || azul.x < 0) {
+          azul.y = 15
+          azul.x = 15
+          azul.vx = 0
+          azul.vy = 0
+          azul.ax = 0
+          azul.ay = 0
+          fuel = 100
+        }
+		
+		if(azul.colidiuCom(plataformaPouso)) {
+			if(azul.vx < 10 && azul.vy < 10 && azul.vy > 0) { // vy > 0 para evitar pouso em baixo da plataforma
+				fim(true)
+			}
+			else {
+				fim(false)
+				
+			}
+		}
+		
+		for(i=0;i<paredes.length;i++) {
+			if(azul.colidiuCom(paredes[i])) {
+				fim(false)
+			}
+		}
+        anterior = atual
+      }
+	  
+	  function fim(vitoria) {
+		azul.podeMover = false
+		plataformaPouso.podeMover = false
+		for(i=0;i<paredes.length;i++) {
+			paredes[i].podeMover = false
+		}
+		if(vitoria) {
+			console.log("Pousou com segurança!")
+		} else {
+			console.log("Colidiu!")
+		}
+	  }
+
+      addEventListener("keydown", function(e) {
+        console.log(e.keyCode)
+        switch(e.keyCode) {
+            case 37:
+              if(fuel > 0) {
+                acelerandoX = true
+                azul.ax = -100
+              }
+              break;
+            case 38:
+              if(fuel > 0) {
+                acelerandoY = true
+                azul.ay = -100
+              }
+              break;
+            case 39:
+              if(fuel > 0) {
+                acelerandoX = true
+                azul.ax = 100
+              }
+              break;
+            case 40:
+              if(fuel > 0) {
+                acelerandoY = true
+                azul.ay = 100
+              }
+              break;
+            /*case 32:
+              azul.vy = -40
+              break;*/
+            default:
+          }
+      })
+
+      addEventListener("keyup", function(e) {
+        console.log(e.keyCode)
+        switch(e.keyCode) {
+            case 37:
+              acelerandoX = false
+              azul.ax = 0
+              break;
+            case 38:
+              acelerandoY = false
+              azul.ay = 0
+              break;
+            case 39:
+              acelerandoX = false
+              azul.ax = 0
+              break;
+            case 40:
+              acelerandoY = false
+              azul.ay = 0
+              break;
+            default:
+          }
+      })
+
+    </script>
+  </body>
+</html>
