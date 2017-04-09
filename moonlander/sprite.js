@@ -8,7 +8,7 @@ function Sprite(cor,x,y,stroke) {
   this.vy = 0
   this.ax = 0
   this.ay = 0
-  this.grav = 3
+  this.grav = 30
   this.cor = cor
   this.stroke = stroke
   this.podeMover = true
