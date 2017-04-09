@@ -15,7 +15,6 @@
 
       var fuel = 100
       var azul = new Sprite("blue", 15, 15, true)
-      //var vermelho = new Sprite("red", 285, 285)
       var atual = new Date()
       var anterior = new Date()
 
@@ -28,7 +27,6 @@
 	  plataformaPouso.largura = 25
 	  plataformaPouso.altura = 5
 	  plataformaPouso.grav = 0
-	  plataformaPouso.vx = 10
 	  plataformaPouso.podeMover = false
 	  
 	  var paredes = []
@@ -58,9 +56,15 @@
         dt = (atual - anterior)/1000
 
         ctx.clearRect(0,0,eCanvas.width, eCanvas.height)
+		ctx.strokeStyle = "red"
         ctx.strokeRect(0,0,eCanvas.width, eCanvas.height)
         ctx.fillStyle = "green"
-        ctx.fillText("dt: " + dt + " fps: " + Math.floor(1/dt), 10, 10)
+        ctx.fillText("dt: " + dt + " fps: " + Math.floor(1/dt) + "  Fuel: ", 10, 10)
+		
+		if(fuel < 30) {
+			ctx.fillStyle = "red"
+		} else ctx.fillStyle = "green"
+        ctx.fillRect(120,1,fuel+2,10)
 
         if(acelerandoX) {
           fuel-=5*dt
@@ -71,11 +75,7 @@
         }
 
         azul.mover(dt)
-		/*
-		if(plataformaPouso.x > 225 || plataformaPouso.x < 175) {
-			plataformaPouso.vx = -plataformaPouso.vx
-		}
-		*/
+
 		for(i=0;i<paredes.length;i++) {
 			if(paredes[i].y < 100 || paredes[i].y > 225) {
 				paredes[i].vy = -paredes[i].vy
@@ -93,23 +93,15 @@
 		for(i=0;i<paredes.length;i++) {
 			paredes[i].desenhar(ctx)
 		}
-
-        ctx.fillStyle = "green"
-        ctx.fillRect(100,0,fuel+2,10)
+		
 
 		/* mantem a nave na tela */
         if(azul.y > 300 || azul.y < 0 || azul.x > 300 || azul.x < 0) {
-          azul.y = 15
-          azul.x = 15
-          azul.vx = 0
-          azul.vy = 0
-          azul.ax = 0
-          azul.ay = 0
-          fuel = 100
+          fim(false)
         }
 		
 		if(azul.colidiuCom(plataformaPouso)) {
-			if(azul.vx < 10 && azul.vy < 10 && azul.vy > 0) { // vy > 0 para evitar pouso em baixo da plataforma
+			if(azul.vx < 10 && azul.vy < 20 && azul.vy > 0) { // vy > 0 para evitar pouso em baixo da plataforma
 				fim(true)
 			}
 			else {
@@ -132,11 +124,17 @@
 		for(i=0;i<paredes.length;i++) {
 			paredes[i].podeMover = false
 		}
+
 		if(vitoria) {
 			console.log("Pousou com segurança!")
+			ctx.fillStyle = "blue"
+			ctx.fillText("Parabéns! Pousou com segurança", 10, 30)
 		} else {
 			console.log("Colidiu!")
+			ctx.fillStyle = "red"
+			ctx.fillText("Ops! Houve uma colisão", 10, 30)
 		}
+		
 	  }
 
       addEventListener("keydown", function(e) {
