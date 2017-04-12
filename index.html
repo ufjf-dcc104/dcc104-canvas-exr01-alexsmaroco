@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8">
     <title>DCC104 - Exemplo 01</title>
+    <script src="ImageLoader.js" charset="utf-8"></script>
     <script src="sprite.js" charset="utf-8"></script>
     <script src="level.js" charset="utf-8"></script>
   </head>
@@ -13,6 +14,10 @@
       var eCanvas = document.getElementsByTagName("canvas")[0]
       var ctx = eCanvas.getContext("2d")
 
+      var il = new ImageLoader()
+      il.load("pc", "images/player_ship.png")
+
+
       var fuel = 100
       //var azul = new Sprite("blue", 15, 15)
       //var vermelho = new Sprite("red", 285, 285)
@@ -20,6 +25,8 @@
       var anterior = new Date()
 
       var level = new level()
+      level.imageLib = il
+
       var azul = new Sprite()
       azul.x = 20
       azul.y = 250
@@ -76,43 +83,14 @@
         })
 
         level.colidiuComTiros()
-        /*
-        if(azul.colidiuCom(level.sprites[0])) {
-          level.sprites[0].cor = "red"
-        } else {
-          level.sprites[0].cor = "blue"
-        }
-        */
-        console.log(azul.x + " " +  azul.y)
+
+        //console.log(azul.x + " " +  azul.y)
         level.desenhar(ctx)
 
-        azul.desenhar(ctx)
-        /*
-        ctx.fillStyle = "green"
-        ctx.fillRect(100,0,fuel+2,10)
-        */
-        if(azul.y > 300 || azul.y < 0 || azul.x > 300 || azul.x < 0) {
-          azul.y = 15
-          azul.x = 15
-          azul.vx = 0
-          azul.vy = 0
-          azul.ax = 0
-          azul.ay = 0
-          //fuel = 100
-        }
+        azul.desenharIMG(ctx, il.images["pc"])
 
-      /*
-		if((azul.x >= plataforma.x && azul.x <= (plataforma.x+plataforma.comprimento)) && ((azul.y+azul.larg) >= (plataforma.y-plataforma.largura*0.5) && (azul.y-azul.larg) <= (plataforma.y+plataforma.largura))) {
-			if(azul.vx < 10 && azul.vy < 20) {
-				console.log("Pousou")
-				azul.podeMover = false
-			}
-			else {
-				console.log("Colidiu")
-				azul.podeMover = false
-			}
-		}
-    */
+        //azul.desenhar(ctx)
+
         anterior = atual
       }
 
@@ -130,15 +108,16 @@
                 acelerandoX = true
                 //azul.ax = -100
                 //azul.vAng = 100
-                azul.am = -20
+                //azul.am = -20
+                azul.vAng = -100
               }
               break;
             case 38:
               if(fuel > 0) {
                 acelerandoY = true
                 //azul.ay = -100
-                azul.vAng = -100
-
+                //azul.vAng = -100
+                azul.am = 20
               }
               break;
             case 39:
@@ -147,7 +126,8 @@
                 //azul.ax = 100
                 //azul.am = 20
                 //azul.vAng = -100
-                azul.am = 20
+                //azul.am = 20
+                azul.vAng = 100
               }
               break;
             case 40:
@@ -155,7 +135,8 @@
                 acelerandoY = true
                 //azul.ay = 100
                 //azul.am = 20
-                azul.vAng = 100
+                //azul.vAng = 100
+                azul.am = -20
               }
               break;
             /*case 32:
@@ -171,22 +152,26 @@
             case 37:
               acelerandoX = false
               //azul.ax = 0
-              azul.am = 0
+              azul.vAng = 0
+              //azul.am = 0
               break;
             case 38:
               acelerandoY = false
               //azul.ay = 0
-              azul.vAng = 0
+              //azul.vAng = 0
+              azul.am = 0
               break;
             case 39:
               acelerandoX = false
               //azul.ax = 0
-              azul.am = 0
+              //azul.am = 0
+              azul.vAng = 0
               break;
             case 40:
               acelerandoY = false
               //azul.ay = 0
-              azul.vAng = 0
+              azul.am = 0
+              //azul.vAng = 0
               break;
             default:
           }

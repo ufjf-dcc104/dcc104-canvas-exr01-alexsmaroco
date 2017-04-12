@@ -6,7 +6,7 @@ function level() {
 
 level.prototype.iniciar = function () {
 	for (var i = 0; i < this.numParedes; i++) {
-		var parede = new Sprite("red", 175 + 50 * i, 150)
+		var parede = new Sprite("red", 175 + 50 * i, 200)
 		parede.largura = 5
 		parede.altura = 50
 		parede.grav = 0
@@ -14,7 +14,7 @@ level.prototype.iniciar = function () {
 		parede.podeMover = true
 		this.paredes.push(parede)
 	}
-	this.plataformaPouso = new Sprite("green", 200, 200)
+	this.plataformaPouso = new Sprite("green", 200, 250)
 	this.plataformaPouso.largura = 25
 	this.plataformaPouso.altura = 5
 	this.plataformaPouso.grav = 0
@@ -23,7 +23,7 @@ level.prototype.iniciar = function () {
 
 level.prototype.mover = function (dt) {
 	for (var i = 0; i < this.paredes.length; i++) {
-		if (this.paredes[i].y < 100 || this.paredes[i].y > 225) {
+		if (this.paredes[i].y < 100 || this.paredes[i].y > 250) {
 			this.paredes[i].vy = -this.paredes[i].vy
 		}
 		this.paredes[i].mover(dt)

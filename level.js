@@ -1,6 +1,7 @@
 function level() {
   this.sprites = []
   this.inimigos = 3
+  this.imageLib
   this.shots = []
 }
 
@@ -51,6 +52,17 @@ level.prototype.desenhar = function(ctx) {
     this.shots[j].desenhar(ctx)
   }
 }
+
+level.prototype.desenharIMG = function(ctx) {
+  for(var i=0;i<this.sprites.length;i++) {
+    this.sprites[i].desenhar(ctx)
+  }
+  for(var j=0;j<this.shots.length;j++) {
+    this.shots[j].desenhar(ctx)
+  }
+}
+
+
 
 level.prototype.colidiuCom = function(alvo, resolveColisao) {
   for(var i=0; i < this.sprites.length; i++) {

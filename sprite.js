@@ -54,6 +54,15 @@ Sprite.prototype.desenhar = function(ctx) {
   //ctx.strokeRect(this.x,this.y,this.largura,this.altura)
 }
 
+Sprite.prototype.desenharIMG = function(ctx, ship) {
+  ctx.save()
+  ctx.translate(this.x, this.y)
+  ctx.rotate(90*Math.PI/180 + this.angle*Math.PI/180)
+  ctx.drawImage(ship,-this.largura/2,-this.altura/2, this.largura,this.altura)
+  ctx.strokeStyle = "black"
+  ctx.restore()
+}
+
 Sprite.prototype.mover = function(dt) {
   if(this.podeMover) {
 	this.vx = this.vx + this.ax*dt

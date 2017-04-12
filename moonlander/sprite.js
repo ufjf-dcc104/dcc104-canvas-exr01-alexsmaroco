@@ -8,6 +8,7 @@ function Sprite(cor,x,y) {
   this.vy = 0
   this.ax = 0
   this.ay = 0
+  this.vento = 0
   this.grav = 30
   this.cor = cor
   this.podeMover = true
@@ -26,7 +27,7 @@ Sprite.prototype.desenhar = function(ctx) {
 
 Sprite.prototype.mover = function(dt) {
   if(this.podeMover) {
-	this.vx = this.vx + this.ax*dt
+	this.vx = this.vx + (this.ax+this.vento)*dt
 	this.vy = this.vy + (this.ay+this.grav)*dt
 	this.x = this.x + this.vx*dt
 	this.y = this.y + this.vy*dt

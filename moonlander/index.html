@@ -16,6 +16,7 @@
 
       var fuel = 100
       var azul = new Sprite("blue", 15, 15)
+      azul.vento = 10
       var atual = new Date()
       var anterior = new Date()
 
@@ -23,7 +24,7 @@
       var dt = 1/fps
       var acelerandoX = false
       var acelerandoY = false
-	  
+
 	  var level = new level()
 
 	  level.iniciar()
@@ -41,7 +42,7 @@
         ctx.strokeRect(0,0,eCanvas.width, eCanvas.height)
         ctx.fillStyle = "green"
         ctx.fillText("dt: " + dt + " fps: " + Math.floor(1/dt) + "  Fuel: ", 10, 10)
-		
+
 		if(fuel < 30) {
 			ctx.fillStyle = "red"
 		} else ctx.fillStyle = "green"
@@ -56,23 +57,23 @@
         }
 
         azul.mover(dt)
-		
+
 		level.mover(dt)
-		
+
 		var fim = level.colisoes(azul,ctx)
 		if(fim) {
 			level.pararMov()
 			azul.podeMover = false
 		}
-		
+
         azul.desenhar(ctx)
-		
+
 		level.desenhar(ctx)
-		
+
         anterior = atual
       }
-	  
-	  
+
+
       addEventListener("keydown", function(e) {
         switch(e.keyCode) {
             case 37:
@@ -99,7 +100,7 @@
                 azul.ay = 100
               }
               break;
-			  
+
             default:
           }
       })
