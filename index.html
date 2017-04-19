@@ -25,7 +25,14 @@
       var anterior = new Date()
 
       var level = new level()
-      level.imageLib = il
+
+      var il = new ImageLoader();
+      il.load("pc", "images/player_ship.png");
+      il.load("enemy", "images/enemy_1.png");
+      il.load("shot", "images/shot.png");
+
+      level.imageLib = il;
+
 
       var azul = new Sprite()
       azul.x = 20
@@ -85,7 +92,7 @@
         level.colidiuComTiros()
 
         //console.log(azul.x + " " +  azul.y)
-        level.desenhar(ctx)
+        level.desenharIMG(ctx)
 
         azul.desenharIMG(ctx, il.images["pc"])
 

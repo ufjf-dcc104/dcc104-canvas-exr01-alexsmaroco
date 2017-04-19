@@ -54,14 +54,19 @@ Sprite.prototype.desenhar = function(ctx) {
   //ctx.strokeRect(this.x,this.y,this.largura,this.altura)
 }
 
-Sprite.prototype.desenharIMG = function(ctx, ship) {
-  ctx.save()
-  ctx.translate(this.x, this.y)
-  ctx.rotate(90*Math.PI/180 + this.angle*Math.PI/180)
-  ctx.drawImage(ship,-this.largura/2,-this.altura/2, this.largura,this.altura)
-  ctx.strokeStyle = "black"
-  ctx.restore()
-}
+Sprite.prototype.desenharIMG = function (ctx, img) {
+  ctx.save();
+  ctx.translate(this.x, this.y);
+  ctx.rotate(this.angle*2*Math.PI/360);
+  ctx.rotate(Math.PI/2);
+  ctx.fillStyle = this.color;
+  ctx.drawImage(img, -this.width/2, -this.height/2, this.width, this.height);
+  if(this.debug){
+    ctx.strokeStyle = "grey";
+    ctx.strokeRect(-this.width/2, -this.height/2, this.width, this.height);
+  }
+  ctx.restore();
+};
 
 Sprite.prototype.mover = function(dt) {
   if(this.podeMover) {

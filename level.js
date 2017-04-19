@@ -1,8 +1,7 @@
-function level() {
-  this.sprites = []
-  this.inimigos = 3
-  this.imageLib
-  this.shots = []
+function level (){
+  this.sprites = [];
+  this.shots = [];
+  this.inimigos = 3;
 }
 
 level.prototype.iniciar = function() {
@@ -15,6 +14,7 @@ level.prototype.iniciar = function() {
     inimigo.cor = "green"
     inimigo.podeMover = true
     inimigo.vAng = 60+30*i
+    inimigo.imgKey = "enemy"
     this.sprites.push(inimigo)
   }
 }
@@ -26,6 +26,12 @@ level.prototype.mover = function(dt) {
   for(var j=0;j<this.shots.length;j++) {
     this.shots[j].mover(dt)
   }
+  for(var j=this.shots.length-1;j>=0;j--) {
+    if(this.shots[j].x > 500 || this.shots[j].y > 500 || this.shots[j].x < -500 || this.shots[j].y < -500) {
+      this.shots.splice(j,1)
+    }
+  }
+
 }
 
 level.prototype.moverAng = function(dt) {
@@ -53,14 +59,14 @@ level.prototype.desenhar = function(ctx) {
   }
 }
 
-level.prototype.desenharIMG = function(ctx) {
-  for(var i=0;i<this.sprites.length;i++) {
-    this.sprites[i].desenhar(ctx)
-  }
-  for(var j=0;j<this.shots.length;j++) {
-    this.shots[j].desenhar(ctx)
-  }
-}
+level.prototype.desenharIMG = function (ctx) {
+    for (var i = 0; i < this.sprites.length; i++) {
+      this.sprites[i].desenharIMG(ctx, this.imageLib.images[this.sprites[i].imgkey]);
+    }
+    for (var i = 0; i < this.shots.length; i++) {
+      this.shots[i].desenharIMG(ctx, this.imageLib.images[this.shots[i].imgkey]);
+    }
+
 
 
 
