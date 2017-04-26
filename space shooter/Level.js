@@ -3,6 +3,7 @@ function Level (){
   this.shots = [];
   this.inimigos = 3;
   this.enemyshots = []
+  this.cooldownSpawn = 4
 }
 
 Level.prototype.init = function () {
@@ -13,28 +14,32 @@ Level.prototype.init = function () {
     inimigo.width = 32;
     inimigo.height = 32;
     inimigo.angle = 90
-	inimigo.vx = 100
-    inimigo.am = 00;
+	  inimigo.vx = 100
+	  inimigo.vy = 20
+    inimigo.am = 0;
     inimigo.imgkey = "enemy";
-	inimigo.cooldown = 3
+	  inimigo.cooldown = 3
     this.sprites.push(inimigo);
   }
 };
 
 Level.prototype.mover = function (dt,w,h) {
-	
-    for (var i = 0; i < this.sprites.length; i++) {
-		
-		if(this.sprites[i].x > w || this.sprites[i].x < 0) {
-			console.log(this.sprites[i].x)
-			this.sprites[i].vx = -1*this.sprites[i].vx
-			this.sprites[i].y += 35
-			//descer
-		}
-		if(this.sprites[i].y >= h) {
-			//perdeu vida?
-		}
+
+    for (var i = this.sprites.length-1; i >=0 ; i--) {
       this.sprites[i].mover(dt);
+  		if(this.sprites[i].x+this.sprites[i].width/2 > w) {
+  			this.sprites[i].vx = -this.sprites[i].vx;
+  			this.sprites[i].x = w-this.sprites[i].width/2;
+  			//descer
+  		} else if(this.sprites[i].x-this.sprites[i].width/2 < 0) {
+        this.sprites[i].vx = -this.sprites[i].vx;
+        this.sprites[i].x = this.sprites[i].width/2;
+      }
+      if(this.sprites[i].y > h) {
+  			//perdeu vida
+        this.sprites.splice(i, 1);
+        this.inimigos--
+  		}
     }
     for (var i = this.shots.length-1;i>=0; i--) {
       this.shots[i].mover(dt);
@@ -47,7 +52,7 @@ Level.prototype.mover = function (dt,w,h) {
         this.shots.splice(i, 1);
       }
     }
-	
+
 	for (var i = this.enemyshots.length-1;i>=0; i--) {
       this.enemyshots[i].mover(dt);
       if(
@@ -162,10 +167,33 @@ Level.prototype.colidiuComTiros = function(al, key){
             that.shots.splice(i,1);
             x = that.sprites.indexOf(alvo);
             that.sprites.splice(x, 1);
+            //that.inimigos--
           }
         }
       )(this));
   }
+}
+
+Level.prototype.spawnInimigos = function(dt) {
+  if(this.cooldownSpawn > 0 || this.sprites.length > 1135) {
+    this.cooldownSpawn -= dt
+    return
+  }
+  for (var i = 0; i < 3; i++) {
+      var inimigo = new Sprite();
+    inimigo.x = 120+i*50;
+    inimigo.y = -40;
+    inimigo.width = 32;
+    inimigo.height = 32;
+    inimigo.angle = 90
+    inimigo.vx = 100
+    inimigo.vy = 40-30*Math.random();
+    inimigo.imgkey = "enemy";
+    inimigo.cooldown = 3;
+    this.sprites.push(inimigo);
+    this.cooldownSpawn = 0.2;
+  }
+  //this.inimigos++
 }
 
 
