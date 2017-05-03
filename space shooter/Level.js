@@ -4,21 +4,22 @@ function Level (){
   this.inimigos = 3;
   this.enemyshots = []
   this.cooldownSpawn = 4
+  this.placar = 0
+  this.energia = 100
 }
 
 Level.prototype.init = function () {
   for (var i = 0; i < this.inimigos; i++) {
     var inimigo = new Sprite();
     inimigo.x = 120+50*i;
-    inimigo.y = 10;
+    inimigo.y = -40;
     inimigo.width = 32;
     inimigo.height = 32;
     inimigo.angle = 90
-	  inimigo.vx = 100
-	  inimigo.vy = 20
-    inimigo.am = 0;
+	inimigo.vx = 75-10*Math.random()
+	inimigo.vy = 15
     inimigo.imgkey = "enemy";
-	  inimigo.cooldown = 3
+	inimigo.cooldown = 3
     this.sprites.push(inimigo);
   }
 };
@@ -82,6 +83,7 @@ Level.prototype.moverAng = function (dt) {
       }
     }
 };
+
 
 Level.prototype.desenhar = function (ctx) {
     for (var i = 0; i < this.sprites.length; i++) {
@@ -167,7 +169,7 @@ Level.prototype.colidiuComTiros = function(al, key){
             that.shots.splice(i,1);
             x = that.sprites.indexOf(alvo);
             that.sprites.splice(x, 1);
-            //that.inimigos--
+            that.placar += 1
           }
         }
       )(this));
@@ -175,26 +177,35 @@ Level.prototype.colidiuComTiros = function(al, key){
 }
 
 Level.prototype.spawnInimigos = function(dt) {
-  if(this.cooldownSpawn > 0 || this.sprites.length > 1135) {
+  if(this.cooldownSpawn > 0 || this.sprites.length > 8) {
     this.cooldownSpawn -= dt
     return
   }
-  for (var i = 0; i < 3; i++) {
-      var inimigo = new Sprite();
-    inimigo.x = 120+i*50;
+  //for (var i = 0; i < 3; i++) {
+    var inimigo = new Sprite();
+    inimigo.x = 32+300*Math.random();
     inimigo.y = -40;
     inimigo.width = 32;
     inimigo.height = 32;
     inimigo.angle = 90
-    inimigo.vx = 100
-    inimigo.vy = 40-30*Math.random();
+    inimigo.vx = 75-25*Math.random()
+    inimigo.vy = 25-15*Math.random();
     inimigo.imgkey = "enemy";
     inimigo.cooldown = 3;
     this.sprites.push(inimigo);
-    this.cooldownSpawn = 0.2;
-  }
+	if(this.sprites.length < 8) { // nao reseta o spawn se estiver com poucos inimigos, so evita que nasçam 2 juntos
+		this.cooldownSpawn += 1
+	}
+    else this.cooldownSpawn = 4;
+  //}
   //this.inimigos++
 }
 
+Level.prototype.desenharInfo = function(ctx) {
+	ctx.fillText("Energia: ", 250,10)
+	if(this.vida < 30) {
+		ctx.fillStyle = "red"
+	} else ctx.fillStyle = "blue"
+    ctx.fillRect(290,1,this.energia+2,10)
+}
 
-//
