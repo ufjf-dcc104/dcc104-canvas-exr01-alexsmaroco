@@ -18,13 +18,11 @@ function Sprite(){
 Sprite.prototype.desenhar = function (ctx) {
   ctx.save();
   ctx.translate(this.x, this.y);
-  //ctx.rotate(this.angle*2*Math.PI/360);
+  ctx.rotate(this.angle*2*Math.PI/360);
   ctx.fillStyle = this.color;
   ctx.fillRect(-this.width/2, -this.height/2, this.width,this.height)
   ctx.fill();
   ctx.strokeStyle = "black";
-  ctx.stroke();
-  ctx.strokeStyle = "grey";
   ctx.strokeRect(-this.width/2, -this.height/2, this.width, this.height);
   ctx.restore();
 };
@@ -60,10 +58,10 @@ Sprite.prototype.mover = function (dt) {
 
 
 Sprite.prototype.colidiuCom = function (alvo) {
-  if(this.x+this.width < alvo.x) return false;
-  if(this.x > alvo.x+this.width) return false;
-  if(this.y+this.height < alvo.y) return false;
-  if(this.y > alvo.y+this.height) return false;
+  if((this.x+this.width/2) < alvo.x-alvo.width/2) return false;
+  if(this.x-this.width/2 > (alvo.x+alvo.width/2)) return false;
+  if((this.y+this.height/2) < alvo.y-alvo.height/2) return false;
+  if(this.y-this.height/2 > (alvo.y+alvo.height/2)) return false;
   return true;
 };
 

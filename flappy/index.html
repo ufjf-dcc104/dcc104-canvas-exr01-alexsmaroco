@@ -18,12 +18,12 @@
       var ctx = eCanvas.getContext("2d");
 
       var il = new ImageLoader();
-      il.load("pc", "images/player_ship.png");
-      
+      il.load("pc", "images/flappy.png");
+
 
       var al = new AudioLoader()
 
-      
+
 
       var fps = 120;
       var atual = new Date();
@@ -31,12 +31,14 @@
       var dt = 1/fps;
 
       var player = new Sprite();
-      player.x = 50;
+      player.x = 30;
       player.y = 40;
-	  player.width = 16
-	  player.height = 16
+	  player.width = 76/2
+	  player.height = 60/2
+    player.angle = -90
 	  player.cooldown = 0.5 // pequeno cooldown para o boost
-	  player.grav = 60
+	  player.grav = 280
+    player.debug = true
       var level = new Level();
       level.imageLib = il;
       level.init(eCanvas.width, eCanvas.height);
@@ -68,7 +70,8 @@
 
         player.desenharImg(ctx, il.images["pc"]);
         level.desenhar(ctx);
-		
+        level.desenharInfo(ctx)
+
         anterior = atual;
       }
 
@@ -81,23 +84,23 @@
 			}
             break;
 			case 37:
-			player.vx = -40
+			//player.vx = -40
 			break
 			case 39:
-			player.vx = 40
+			//player.vx = 40
 			break
           default:
 
         }
       });
-	  
+
       addEventListener("keyup", function(e){
         switch (e.keyCode) {
           case 37:
-            player.vx = 0;
+            //player.vx = 0;
             break;
           case 39:
-            player.vx = 0;
+            //player.vx = 0;
             break;
           default:
 

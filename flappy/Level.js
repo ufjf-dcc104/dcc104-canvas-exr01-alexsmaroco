@@ -1,24 +1,28 @@
 function Level (){
   this.sprites = [];
   this.paredeCooldown = 4;
+  this.anterior = null
 }
 
 Level.prototype.init = function (w,h) {
   this.width = w
   this.height = h
   this.spawnY = 0
-  this.distMinima = 64
+  this.distMinima = 80
+  this.distMaxima = 128
+  this.score = 0
 };
 
 Level.prototype.mover = function (dt) {
     for (var i = this.sprites.length-1;i>=0; i--) {
       this.sprites[i].mover(dt);
       if(
-        this.sprites[i].x >  3000 ||
-        this.sprites[i].x < -3000 ||
+        this.sprites[i].x >  this.width+500 ||
+        this.sprites[i].x < -100 ||
         this.sprites[i].y >  3000 ||
         this.sprites[i].y < -3000
       ){
+        this.score += 0.5
         this.sprites.splice(i, 1);
       }
     }
@@ -52,7 +56,7 @@ Level.prototype.colidiuCom = function (alvo, resolveColisao) {
 
 Level.prototype.boost = function (alvo){
   if(alvo.cooldown>0) return;
-  alvo.vy -= 100
+  alvo.vy = -250
   alvo.cooldown = 0.5;
 }
 
@@ -76,24 +80,44 @@ Level.prototype.spawnParedes = function() {
 	parede.vx = -60
 	this.sprites.push(parede)
 	*/
+  var mod = this.score/100
+  if(mod > 20) mod = 20
+  var modHeight = 0
+  if(this.anterior != null) {
+    if(Math.random() < 0.5) modHeight = this.anterior.y*0.5
+    else modHeight = -this.anterior.y*0.5
+  }
+
 	var paredeCima = new Sprite()
 	paredeCima.x = this.width + 30
-	paredeCima.y = 50 + 150*Math.random()
-	paredeCima.width = 10+10*Math.random()
-	paredeCima.height = 100+200*Math.random()
-	paredeCima.vx = -60
-	
+	paredeCima.y = modHeight+this.height*0.35*(-1+1*Math.random())
+	paredeCima.width = 20
+	paredeCima.height = this.height
+	paredeCima.vx = -60-mod
+
 	var paredeBaixo = new Sprite()
-	paredeBaixo.x = this.width + 30
-	paredeBaixo.y = (paredeCima.y + paredeCima.height + this.distMinima)
-	paredeBaixo.width = 10+10*Math.random()
-	paredeBaixo.height = 100+150*Math.random()
-	paredeBaixo.vx = -60
-	
+	paredeBaixo.x = paredeCima.x
+	paredeBaixo.y = (paredeCima.y + paredeCima.height + this.distMinima*(1+Math.random()))
+	paredeBaixo.width = paredeCima.width
+	paredeBaixo.height = paredeCima.height
+	paredeBaixo.vx = paredeCima.vx
+
+  this.anterior = paredeCima
+
 	this.sprites.push(paredeCima)
 	this.sprites.push(paredeBaixo)
-	this.paredesCooldown = 2
+  var mod = this.score/50
+  if(mod > 2) mod = 2
+	this.paredesCooldown = 0.51// - mod
+
+
 }
+
+Level.prototype.desenharInfo = function(ctx) {
+	ctx.fillText("Pontos: " + this.score, 250,10)
+
+}
+
 /*
 Level.prototype.colidiuComTiros = function(al, key){
   for(var i = this.shots.length-1; i>=0; i--){
