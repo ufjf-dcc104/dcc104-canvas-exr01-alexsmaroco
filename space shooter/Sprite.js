@@ -77,10 +77,10 @@ Sprite.prototype.moverAng = function (dt) {
 
 
 Sprite.prototype.colidiuCom = function (alvo) {
-  if(this.x+this.width < alvo.x) return false;
-  if(this.x > alvo.x+this.width) return false;
-  if(this.y+this.height < alvo.y) return false;
-  if(this.y > alvo.y+this.height) return false;
+  if((this.x+this.width/2) < alvo.x-alvo.width/2) return false;
+  if(this.x-this.width/2 > (alvo.x+alvo.width/2)) return false;
+  if((this.y+this.height/2) < alvo.y-alvo.height/2) return false;
+  if(this.y-this.height/2 > (alvo.y+alvo.height/2)) return false;
   return true;
 };
 
