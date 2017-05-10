@@ -13,13 +13,14 @@
     <canvas></canvas>
     <script>
       var eCanvas = document.getElementsByTagName("canvas")[0];
-      eCanvas.width = 600;
-      eCanvas.height = 380;
+      eCanvas.width = 400;
+      eCanvas.height = 500;
       var ctx = eCanvas.getContext("2d");
 
       var il = new ImageLoader();
       il.load("pc", "images/player_ship.png");
-      il.load("enemy", "images/enemy_1.png");
+      il.load("asteroidSmall", "images/asteroid01.png");
+      il.load("asteroidLarge", "images/asteroid02.png");
       il.load("shot", "images/shot.png");
 
       var al = new AudioLoader()
@@ -36,14 +37,12 @@
       azul.x = 40;
       azul.y = 350;
 	    azul.angle = 270
-      var hp = 100;
-      var acelerandoX = false;
-      var acelerandoY = false;
+
       var level = new Level();
 
 
       level.imageLib = il;
-      level.init();
+      level.init(eCanvas.width, eCanvas.height);
 
       desenha();
 
@@ -61,14 +60,19 @@
 
         level.spawnInimigos(dt)
 
+
+
 		    azul.mover(dt,eCanvas.width, eCanvas.height)
 		    level.mover(dt,eCanvas.width, eCanvas.height)
+
+        level.colidiuComTiros(al, "explosao");
+        level.colidiuComPredios()
 
 
         azul.desenharImg(ctx, il.images["pc"]);
         level.desenharImg(ctx);
-        level.colidiuComTiros(al, "explosao");
-		level.desenharInfo(ctx)
+
+		      level.desenharInfo(ctx)
         anterior = atual;
       }
 

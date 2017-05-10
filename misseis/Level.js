@@ -1,30 +1,62 @@
 function Level (){
   this.sprites = [];
+  this.predios = []
   this.shots = [];
   this.inimigos = 1;
   this.enemyshots = []
   this.cooldownSpawn = 4
   this.placar = 0
   this.energia = 100
-  this.normaVel = 80
+  this.normaVel = 60
 }
 
-Level.prototype.init = function () {
-  for (var i = 0; i < this.inimigos; i++) {
-    var inimigo = new Sprite();
-    inimigo.x = 120+50*i;
-    inimigo.y = -40;
-    inimigo.width = 32;
-    inimigo.height = 32;
-    inimigo.angle = 90
-	
-	inimigo.vx = 30-10*Math.random()
-	inimigo.vy = Math.sqrt(this.normaVel*this.normalVel-inimigo.vx*inimigo.vx) // n^2 = x^2 + y^2,  y^2 = n^2-x^2
-    inimigo.imgkey = "enemy";
-	inimigo.cooldown = 3
-    this.sprites.push(inimigo);
-  }
-};
+Level.prototype.init = function (w,h) {
+  this.w = w;
+  this.h = h
+  this.canhao = new Sprite()
+  this.canhao.x = this.w/2
+  this.canhao.width = 32
+  this.canhao.height = 112
+  this.canhao.y = this.h-this.canhao.height/2;
+
+
+  var predio1 = new Sprite();
+  predio1.x = this.w*0.1;
+  predio1.vida = 100
+  predio1.width = 32;
+  predio1.height = 48+64*Math.random();
+  predio1.y = this.h-predio1.height/2;
+  predio1.imgkey = "";
+  this.predios.push(predio1);
+
+  var predio2 = new Sprite()
+  predio2.x = this.w*0.3;
+  predio2.vida = 100
+  predio2.width = 32;
+  predio2.height = 48+64*Math.random();
+  predio2.y = this.h-predio2.height/2;
+  predio2.imgkey = "";
+  this.predios.push(predio2);
+
+  var predio3 = new Sprite()
+  predio3.x = this.w*0.7;
+  predio3.vida = 100
+  predio3.width = 32;
+  predio3.height = 48+64*Math.random();
+  predio3.y = this.h-predio3.height/2;
+  predio3.imgkey = "";
+  this.predios.push(predio3);
+
+  var predio4 = new Sprite()
+  predio4.x = this.w*0.85;
+  predio4.vida = 100
+  predio4.width = 32;
+  predio4.height = 48+64*Math.random();
+  predio4.y = this.h-predio4.height/2;
+  predio4.imgkey = "";
+  this.predios.push(predio4);
+}
+
 
 
 Level.prototype.mover = function (dt,w,h) {
@@ -39,10 +71,9 @@ Level.prototype.mover = function (dt,w,h) {
         this.sprites[i].vx = -this.sprites[i].vx;
         this.sprites[i].x = this.sprites[i].width/2;
       }
-      if(this.sprites[i].y > h) {
+      if(this.sprites[i].y > h*1.5) {
   			//perdeu vida
         this.sprites.splice(i, 1);
-        this.inimigos--
   		}
     }
     for (var i = this.shots.length-1;i>=0; i--) {
@@ -87,7 +118,6 @@ Level.prototype.moverAng = function (dt) {
     }
 };
 
-
 Level.prototype.desenhar = function (ctx) {
     for (var i = 0; i < this.sprites.length; i++) {
       this.sprites[i].desenhar(ctx);
@@ -96,7 +126,12 @@ Level.prototype.desenhar = function (ctx) {
       this.shots[i].desenhar(ctx);
     }
 };
+
 Level.prototype.desenharImg = function (ctx) {
+    this.canhao.desenhar(ctx)
+    for (var i = 0; i < this.predios.length; i++) {
+      this.predios[i].desenhar(ctx)
+    }
     for (var i = 0; i < this.sprites.length; i++) {
       this.sprites[i].desenharImg(ctx, this.imageLib.images[this.sprites[i].imgkey]);
     }
@@ -154,29 +189,54 @@ Level.prototype.colidiuComTiros = function(al, key){
 }
 
 Level.prototype.spawnInimigos = function(dt) {
-  if(this.cooldownSpawn > 0 || this.sprites.length > 8) {
+  if(this.cooldownSpawn > 0) {
     this.cooldownSpawn -= dt
     return
   }
-  //for (var i = 0; i < 3; i++) {
-    var inimigo = new Sprite();
-    inimigo.x = 32+300*Math.random();
-    inimigo.y = -40;
-    inimigo.width = 32;
-    inimigo.height = 32;
-    inimigo.angle = 90
-    inimigo.vx = 30-10*Math.random()
-	inimigo.vy = Math.sqrt(this.normaVel*this.normalVel-inimigo.vx*inimigo.vx) // n^2 = x^2 + y^2,  y^2 = n^2-x^2
-    inimigo.imgkey = "enemy";
-    inimigo.cooldown = 3;
-    this.sprites.push(inimigo);
-	if(this.sprites.length < 8) { // nao reseta o spawn se estiver com poucos inimigos, so evita que nasçam 2 juntos
-		this.cooldownSpawn += 1
-	}
-    else this.cooldownSpawn = 4;
-  //}
-  //this.inimigos++
+    var ast = new Sprite();
+    var size = 1
+    var imgkey = "asteroidSmall"
+    if(Math.random() > 0.5) {
+      size = 2
+      imgkey = "asteroidLarge"
+    }
+    ast.debug = true
+    ast.x = 32+this.w*Math.random();
+    ast.y = -70;
+    ast.width = 32*size;
+    ast.height = 32*size;
+    ast.angle = 90
+    ast.vx = 50-10*Math.random()
+    var vy2 = this.normaVel*this.normaVel-ast.vx*ast.vx
+	  ast.vy = Math.sqrt(vy2) // n^2 = x^2 + y^2,  y^2 = n^2-x^2
+    ast.imgkey = imgkey;
+    this.sprites.push(ast);
+    this.cooldownSpawn = 1;
 }
+
+Level.prototype.colidiuComPredios = function () {
+  for(var i = this.predios.length-1; i>=0; i--){
+
+    this.colidiuCom(this.predios[i],
+      (
+        function(that)
+        {
+          return function(alvo){
+          //  al.play(key, 0.7)
+            that.predios[i].color = "red";
+            that.predios[i].vida-= 50
+            if(that.predios[i].vida <= 0) {
+              that.predios.splice(i,1);
+            }
+            x = that.sprites.indexOf(alvo);
+            that.sprites.splice(x, 1);
+          //  that.placar += 1
+          }
+        }
+      )(this));
+  }
+};
+
 
 Level.prototype.desenharInfo = function(ctx) {
 	ctx.fillText("Energia: ", 250,10)
@@ -185,4 +245,3 @@ Level.prototype.desenharInfo = function(ctx) {
 	} else ctx.fillStyle = "blue"
     ctx.fillRect(290,1,this.energia+2,10)
 }
-
