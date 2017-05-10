@@ -10,19 +10,21 @@ Level.prototype.init = function (w,h) {
   this.spawnY = 0
   this.distMinima = 80
   this.distMaxima = 128
-  this.score = 0
 };
 
-Level.prototype.mover = function (dt) {
+Level.prototype.mover = function (dt, player) {
     for (var i = this.sprites.length-1;i>=0; i--) {
       this.sprites[i].mover(dt);
+	  if(this.sprites[i].pontuar && this.sprites[i].x < player.x) {
+		player.score+=1
+		this.sprites[i].pontuar = false
+	  }
       if(
         this.sprites[i].x >  this.width+500 ||
         this.sprites[i].x < -100 ||
         this.sprites[i].y >  3000 ||
         this.sprites[i].y < -3000
       ){
-        this.score += 0.5
         this.sprites.splice(i, 1);
       }
     }
@@ -56,32 +58,18 @@ Level.prototype.colidiuCom = function (alvo, resolveColisao) {
 
 Level.prototype.boost = function (alvo){
   if(alvo.cooldown>0) return;
-  alvo.vy = -250
+  alvo.vy = -200
   alvo.cooldown = 0.5;
 }
 
-Level.prototype.spawnParedes = function() {
+Level.prototype.spawnParedes = function(score) {
 	if(this.paredesCooldown > 0) {
 		this.paredesCooldown -= dt
 		return
 	}
-	/*
-	var parede = new Sprite()
-	if(Math.random() <= 0.5) {
-		this.spawnY = this.height-50
-	}
-	else {
-		this.spawnY = 50
-	}
-	parede.x = this.width + 30
-	parede.y = this.spawnY
-	parede.width = 10+15*Math.random()
-	parede.height = 100+150*Math.random()
-	parede.vx = -60
-	this.sprites.push(parede)
-	*/
-  var mod = this.score/100
-  if(mod > 20) mod = 20
+	
+  var mod = score/100
+  if(mod > 25) mod = 25
   var modHeight = 0
   if(this.anterior != null) {
     if(Math.random() < 0.5) modHeight = this.anterior.y*0.5
@@ -89,13 +77,15 @@ Level.prototype.spawnParedes = function() {
   }
 
 	var paredeCima = new Sprite()
+	paredeCima.pontuar = true
 	paredeCima.x = this.width + 30
 	paredeCima.y = modHeight+this.height*0.35*(-1+1*Math.random())
 	paredeCima.width = 20
 	paredeCima.height = this.height
-	paredeCima.vx = -60-mod
+	paredeCima.vx = -75-mod
 
 	var paredeBaixo = new Sprite()
+	paredeBaixo.pontuar = false
 	paredeBaixo.x = paredeCima.x
 	paredeBaixo.y = (paredeCima.y + paredeCima.height + this.distMinima*(1+Math.random()))
 	paredeBaixo.width = paredeCima.width
@@ -106,16 +96,16 @@ Level.prototype.spawnParedes = function() {
 
 	this.sprites.push(paredeCima)
 	this.sprites.push(paredeBaixo)
-  var mod = this.score/50
-  if(mod > 2) mod = 2
-	this.paredesCooldown = 0.51// - mod
+  var modCd = score/50
+  if(modCd > 2) modCd = 2
+	this.paredesCooldown = 4// - modCd
 
 
 }
 
-Level.prototype.desenharInfo = function(ctx) {
-	ctx.fillText("Pontos: " + this.score, 250,10)
-
+Level.prototype.desenharInfo = function(ctx, player, colidiu) {
+	ctx.fillText("Pontos: " + player.score, 250,10)
+	ctx.fillText(colidiu, 300,10)
 }
 
 /*

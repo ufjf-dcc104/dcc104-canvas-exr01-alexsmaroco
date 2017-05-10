@@ -25,10 +25,11 @@
 
 
 
-      var fps = 120;
+      var fps = 60;
       var atual = new Date();
       var anterior = new Date();
       var dt = 1/fps;
+	  var colidiu = false
 
       var player = new Sprite();
       player.x = 30;
@@ -38,6 +39,7 @@
     player.angle = -90
 	  player.cooldown = 0.5 // pequeno cooldown para o boost
 	  player.grav = 280
+	  player.score = 0
     player.debug = true
       var level = new Level();
       level.imageLib = il;
@@ -57,20 +59,24 @@
         ctx.fillStyle = "darkgreen";
         ctx.fillText("dt: "+dt+" fps:"+Math.floor(1/dt), 10, 10);
 
-		player.cooldown-=dt
-        player.mover(dt);
-        level.mover(dt);
-		level.spawnParedes()
-
+		
+		if(!colidiu) {
+			player.cooldown-=dt
+			player.mover(dt);
+			level.mover(dt, player);
+			level.spawnParedes(player.score)
+		}
+		
         level.colidiuCom(player,
           function(inimigo, alvo){
             inimigo.color = "red";
+			colidiu = true
           }
         );
 
         player.desenharImg(ctx, il.images["pc"]);
         level.desenhar(ctx);
-        level.desenharInfo(ctx)
+        level.desenharInfo(ctx, player, colidiu)
 
         anterior = atual;
       }
