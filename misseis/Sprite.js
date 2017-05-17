@@ -46,7 +46,11 @@ Sprite.prototype.mover = function (dt) {
   this.vy = this.vy + (this.ay+this.g)*dt;
   this.x = this.x + this.vx*dt;
   this.y = this.y + this.vy*dt;
-  this.angle = this.angle + this.vang*dt;
+  if(this.minAngle && this.maxAngle) {
+    if(this.angle <= this.minAngle) this.angle = this.minAngle;
+    if(this.angle >= this.maxAngle) this.angle = this.maxAngle;
+    this.angle = this.angle + this.vang*dt;
+  }
   if(this.cooldown>0) {
     this.cooldown -= dt;
   } else {

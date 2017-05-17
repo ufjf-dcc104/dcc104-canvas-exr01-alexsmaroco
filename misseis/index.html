@@ -33,16 +33,25 @@
       var anterior = new Date();
       var dt = 1/fps;
 
-      var azul = new Sprite();
-      azul.x = 40;
-      azul.y = 350;
-	    azul.angle = 270
+
 
       var level = new Level();
 
 
+
+
       level.imageLib = il;
       level.init(eCanvas.width, eCanvas.height);
+
+      var canhao = new Sprite();
+      canhao.color = "red";
+      canhao.width = 16;
+      canhao.height = 24;
+      canhao.x = level.platCanhao.x;
+      canhao.y = level.platCanhao.y-level.platCanhao.height/2-canhao.height/2+5;
+	    canhao.angle = 180;
+      canhao.minAngle = 120;
+      canhao.maxAngle = 240;
 
       desenha();
 
@@ -62,14 +71,14 @@
 
 
 
-		    azul.mover(dt,eCanvas.width, eCanvas.height)
+		    canhao.mover(dt,eCanvas.width, eCanvas.height)
 		    level.mover(dt,eCanvas.width, eCanvas.height)
 
         level.colidiuComTiros(al, "explosao");
         level.colidiuComPredios()
 
 
-        azul.desenharImg(ctx, il.images["pc"]);
+        canhao.desenhar(ctx);
         level.desenharImg(ctx);
 
 		      level.desenharInfo(ctx)
@@ -77,23 +86,22 @@
       }
 
       addEventListener("keydown", function(e){
-        if(hp<=0) return;
         switch (e.keyCode) {
           case 32:
-            level.fire(azul,al, "shot");
+            level.fire(canhao,al, "shot");
             break;
 
           case 37: // seta <
-			azul.vx = -100
+			      canhao.vang = -100
             break;
           case 38:
-            //azul.am = 50;
+            //canhao.am = 50;
             break;
           case 39: // seta >
-			azul.vx = 100
+			canhao.vang = 100
             break;
           case 40:
-            //azul.am = -50;
+            //canhao.am = -50;
             break;
           default:
 
@@ -102,16 +110,16 @@
       addEventListener("keyup", function(e){
         switch (e.keyCode) {
           case 37:
-			azul.vx = 0
+			canhao.vang = 0
             break;
           case 38:
-            azul.am = 0;
+            canhao.vang = 0;
             break;
           case 39:
-			azul.vx = 0
+			canhao.vang = 0
             break;
           case 40:
-            azul.am = 0;
+            canhao.vang = 0;
             break;
           default:
 

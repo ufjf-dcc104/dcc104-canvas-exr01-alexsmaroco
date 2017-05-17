@@ -13,11 +13,12 @@ function Level (){
 Level.prototype.init = function (w,h) {
   this.w = w;
   this.h = h
-  this.canhao = new Sprite()
-  this.canhao.x = this.w/2
-  this.canhao.width = 32
-  this.canhao.height = 112
-  this.canhao.y = this.h-this.canhao.height/2;
+  this.platCanhao = new Sprite()
+  this.platCanhao.color = "black"
+  this.platCanhao.x = this.w/2
+  this.platCanhao.width = 32
+  this.platCanhao.height = 112
+  this.platCanhao.y = this.h-this.platCanhao.height/2;
 
 
   var predio1 = new Sprite();
@@ -77,35 +78,6 @@ Level.prototype.mover = function (dt,w,h) {
   		}
     }
     for (var i = this.shots.length-1;i>=0; i--) {
-      this.shots[i].mover(dt);
-      if(
-        this.shots[i].x >  3000 ||
-        this.shots[i].x < -3000 ||
-        this.shots[i].y >  3000 ||
-        this.shots[i].y < -3000
-      ){
-        this.shots.splice(i, 1);
-      }
-    }
-
-	for (var i = this.enemyshots.length-1;i>=0; i--) {
-      this.enemyshots[i].mover(dt);
-      if(
-        this.enemyshots[i].x >  3000 ||
-        this.enemyshots[i].x < -3000 ||
-        this.enemyshots[i].y >  3000 ||
-        this.enemyshots[i].y < -3000
-      ){
-        this.enemyshots.splice(i, 1);
-      }
-    }
-};
-
-Level.prototype.moverAng = function (dt) {
-    for (var i = 0; i < this.sprites.length; i++) {
-      this.sprites[i].moverAng(dt);
-    }
-    for (var i = this.shots.length-1; i >= 0; i--) {
       this.shots[i].moverAng(dt);
       if(
         this.shots[i].x >  3000 ||
@@ -118,6 +90,7 @@ Level.prototype.moverAng = function (dt) {
     }
 };
 
+
 Level.prototype.desenhar = function (ctx) {
     for (var i = 0; i < this.sprites.length; i++) {
       this.sprites[i].desenhar(ctx);
@@ -128,13 +101,19 @@ Level.prototype.desenhar = function (ctx) {
 };
 
 Level.prototype.desenharImg = function (ctx) {
-    this.canhao.desenhar(ctx)
+    this.platCanhao.desenhar(ctx)
     for (var i = 0; i < this.predios.length; i++) {
       this.predios[i].desenhar(ctx)
     }
+    /*
     for (var i = 0; i < this.sprites.length; i++) {
       this.sprites[i].desenharImg(ctx, this.imageLib.images[this.sprites[i].imgkey]);
     }
+    */
+    for (var i = 0; i < this.sprites.length; i++) {
+      this.sprites[i].desenhar(ctx);
+    }
+
     for (var i = 0; i < this.shots.length; i++) {
       this.shots[i].desenharImg(ctx, this.imageLib.images[this.shots[i].imgkey]);
     }
@@ -157,7 +136,8 @@ Level.prototype.fire = function (alvo, al, key, vol){
   tiro.y = alvo.y;
   tiro.angle = alvo.angle;
   tiro.am = 100;
-  tiro.ay = -50
+  tiro.ay = -50;
+  tiro.g = 0;
   tiro.width = 8;
   tiro.height = 16;
   tiro.imgkey = "shot";
@@ -195,21 +175,22 @@ Level.prototype.spawnInimigos = function(dt) {
   }
     var ast = new Sprite();
     var size = 1
-    var imgkey = "asteroidSmall"
+    //var imgkey = "asteroidSmall"
     if(Math.random() > 0.5) {
-      size = 2
-      imgkey = "asteroidLarge"
+      size = 1.5
+      //imgkey = "asteroidLarge"
     }
     ast.debug = true
     ast.x = 32+this.w*Math.random();
     ast.y = -70;
-    ast.width = 32*size;
-    ast.height = 32*size;
+    ast.width = 24*size;
+    ast.height = 24*size;
     ast.angle = 90
+    ast.color = "red"
     ast.vx = 50-10*Math.random()
     var vy2 = this.normaVel*this.normaVel-ast.vx*ast.vx
 	  ast.vy = Math.sqrt(vy2) // n^2 = x^2 + y^2,  y^2 = n^2-x^2
-    ast.imgkey = imgkey;
+    //ast.imgkey = imgkey;
     this.sprites.push(ast);
     this.cooldownSpawn = 1;
 }
