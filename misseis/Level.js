@@ -220,10 +220,10 @@ Level.prototype.colidiuComPredios = function () {
 
 Level.prototype.desenharInfo = function(ctx) {
 	ctx.fillText("Pontos: " + this.placar, 200,10)
-	
+	ctx.fillText("Vida: ", 170,20)
 	for(var i = 0; i < this.predios.length; i++) {
-		ctx.fillColor = "red"
-		ctx.fillText("" + this.predios[i].vida, this.predios[i].x, this.predios[i].y-10)
+		ctx.fillStyle = "red"
+		ctx.fillText(" " + (i+1) + ": " + this.predios[i].vida, 200+50*i, 20)
 	}
 	
 }
