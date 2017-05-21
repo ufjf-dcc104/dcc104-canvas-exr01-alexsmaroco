@@ -6,7 +6,6 @@ function Level (){
   this.enemyshots = []
   this.cooldownSpawn = 4
   this.placar = 0
-  this.energia = 100
   this.normaVel = 60
 }
 
@@ -72,8 +71,7 @@ Level.prototype.mover = function (dt,w,h) {
         this.sprites[i].vx = -this.sprites[i].vx;
         this.sprites[i].x = this.sprites[i].width/2;
       }
-      if(this.sprites[i].y > h*1.5) {
-  			//perdeu vida
+      if(this.sprites[i].y > h+100) {
         this.sprites.splice(i, 1);
   		}
     }
@@ -134,8 +132,8 @@ Level.prototype.fire = function (alvo, al, key, vol){
   var tiro = new Sprite();
   tiro.x = alvo.x;
   tiro.y = alvo.y;
-  tiro.angle = alvo.angle;
-  tiro.am = 100;
+  tiro.angle = alvo.angle+90;
+  tiro.am = 150;
   tiro.ay = -50;
   tiro.g = 0;
   tiro.width = 8;
@@ -156,7 +154,7 @@ Level.prototype.colidiuComTiros = function(al, key){
         function(that)
         {
           return function(alvo){
-            al.play(key, 0.7)
+            //al.play(key, 0.7)
             alvo.color = "green";
             that.shots.splice(i,1);
             x = that.sprites.indexOf(alvo);
@@ -181,7 +179,8 @@ Level.prototype.spawnInimigos = function(dt) {
       //imgkey = "asteroidLarge"
     }
     ast.debug = true
-    ast.x = 32+this.w*Math.random();
+	ast.size = size
+    ast.x = this.w*Math.random();
     ast.y = -70;
     ast.width = 24*size;
     ast.height = 24*size;
@@ -192,7 +191,7 @@ Level.prototype.spawnInimigos = function(dt) {
 	  ast.vy = Math.sqrt(vy2) // n^2 = x^2 + y^2,  y^2 = n^2-x^2
     //ast.imgkey = imgkey;
     this.sprites.push(ast);
-    this.cooldownSpawn = 1;
+    this.cooldownSpawn = 2;
 }
 
 Level.prototype.colidiuComPredios = function () {
@@ -204,8 +203,8 @@ Level.prototype.colidiuComPredios = function () {
         {
           return function(alvo){
           //  al.play(key, 0.7)
-            that.predios[i].color = "red";
-            that.predios[i].vida-= 50
+            //that.predios[i].color = "red";
+            that.predios[i].vida-= 25*alvo.size // 
             if(that.predios[i].vida <= 0) {
               that.predios.splice(i,1);
             }
@@ -220,9 +219,11 @@ Level.prototype.colidiuComPredios = function () {
 
 
 Level.prototype.desenharInfo = function(ctx) {
-	ctx.fillText("Energia: ", 250,10)
-	if(this.vida < 30) {
-		ctx.fillStyle = "red"
-	} else ctx.fillStyle = "blue"
-    ctx.fillRect(290,1,this.energia+2,10)
+	ctx.fillText("Pontos: " + this.placar, 200,10)
+	
+	for(var i = 0; i < this.predios.length; i++) {
+		ctx.fillColor = "red"
+		ctx.fillText("" + this.predios[i].vida, this.predios[i].x, this.predios[i].y-10)
+	}
+	
 }
