@@ -21,6 +21,7 @@
       il.load("pc", "images/player_ship.png");
       il.load("enemy", "images/enemy_1.png");
       il.load("shot", "images/shot.png");
+	  il.load("background", "images/background.jpg");
 
       var al = new AudioLoader()
 
@@ -32,10 +33,10 @@
       var anterior = new Date();
       var dt = 1/fps;
 
-      var azul = new Sprite();
-      azul.x = 40;
-      azul.y = 350;
-	    azul.angle = 270
+      var nave = new Sprite();
+      nave.x = 40;
+      nave.y = 350;
+	  nave.angle = 270
       var hp = 100;
       var acelerandoX = false;
       var acelerandoY = false;
@@ -56,23 +57,26 @@
         dt = (atual - anterior)/1000;
         ctx.clearRect(0,0,eCanvas.width, eCanvas.height)
         ctx.strokeRect(0,0,eCanvas.width, eCanvas.height)
+		ctx.drawImage(il.images["background"],0,0);
         ctx.fillStyle = "darkgreen";
         ctx.fillText("dt: "+dt+" fps:"+Math.floor(1/dt), 10, 10);
 
         level.spawnInimigos(dt)
 
-		    azul.mover(dt,eCanvas.width, eCanvas.height)
-		    level.mover(dt,eCanvas.width, eCanvas.height)
+		nave.mover(dt,eCanvas.width, eCanvas.height)
+		level.mover(dt,eCanvas.width, eCanvas.height)
+		level.fireInimigo(dt);
 
-        level.colidiuCom(azul,
+        level.colidiuCom(nave,
           function(inimigo, alvo){
             inimigo.color = "red";
           }
         );
 
-        azul.desenharImg(ctx, il.images["pc"]);
+        nave.desenharImg(ctx, il.images["pc"]);
         level.desenharImg(ctx);
         level.colidiuComTiros(al, "explosao");
+		level.colidiuComTirosInimigos(nave);
 		level.desenharInfo(ctx)
         anterior = atual;
       }
@@ -81,20 +85,20 @@
         if(hp<=0) return;
         switch (e.keyCode) {
           case 32:
-            level.fire(azul,al, "shot");
+            level.fire(nave,al, "shot", 0.2);
             break;
 
           case 37: // seta <
-			azul.vx = -100
+			nave.vx = -100
             break;
           case 38:
-            //azul.am = 50;
+            //nave.am = 50;
             break;
           case 39: // seta >
-			azul.vx = 100
+			nave.vx = 100
             break;
           case 40:
-            //azul.am = -50;
+            //nave.am = -50;
             break;
           default:
 
@@ -103,16 +107,16 @@
       addEventListener("keyup", function(e){
         switch (e.keyCode) {
           case 37:
-			azul.vx = 0
+			nave.vx = 0
             break;
           case 38:
-            azul.am = 0;
+            nave.am = 0;
             break;
           case 39:
-			azul.vx = 0
+			nave.vx = 0
             break;
           case 40:
-            azul.am = 0;
+            nave.am = 0;
             break;
           default:
 

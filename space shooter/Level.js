@@ -1,11 +1,12 @@
 function Level (){
   this.sprites = [];
   this.shots = [];
-  this.inimigos = 3;
+  this.inimigos = 1;
   this.enemyshots = []
   this.cooldownSpawn = 4
   this.placar = 0
   this.energia = 100
+  this.fireInimigoCD = 1;
 }
 
 Level.prototype.init = function () {
@@ -28,6 +29,7 @@ Level.prototype.mover = function (dt,w,h) {
 
     for (var i = this.sprites.length-1; i >=0 ; i--) {
       this.sprites[i].mover(dt);
+	  this.sprites[i].cooldown-=dt;
   		if(this.sprites[i].x+this.sprites[i].width/2 > w) {
   			this.sprites[i].vx = -this.sprites[i].vx;
   			this.sprites[i].x = w-this.sprites[i].width/2;
@@ -37,9 +39,8 @@ Level.prototype.mover = function (dt,w,h) {
         this.sprites[i].x = this.sprites[i].width/2;
       }
       if(this.sprites[i].y > h) {
-  			//perdeu vida
+  		this.energia-=15
         this.sprites.splice(i, 1);
-        this.inimigos--
   		}
     }
     for (var i = this.shots.length-1;i>=0; i--) {
@@ -56,6 +57,7 @@ Level.prototype.mover = function (dt,w,h) {
 
 	for (var i = this.enemyshots.length-1;i>=0; i--) {
       this.enemyshots[i].mover(dt);
+	  console.log(this.enemyshots[i]);
       if(
         this.enemyshots[i].x >  3000 ||
         this.enemyshots[i].x < -3000 ||
@@ -100,6 +102,9 @@ Level.prototype.desenharImg = function (ctx) {
     for (var i = 0; i < this.shots.length; i++) {
       this.shots[i].desenharImg(ctx, this.imageLib.images[this.shots[i].imgkey]);
     }
+	for (var i = 0; i < this.enemyshots.length; i++) {
+      this.enemyshots[i].desenharImg(ctx, this.imageLib.images[this.enemyshots[i].imgkey]);
+    }
 };
 
 Level.prototype.colidiuCom = function (alvo, resolveColisao) {
@@ -110,32 +115,36 @@ Level.prototype.colidiuCom = function (alvo, resolveColisao) {
     }
 };
 
-Level.prototype.perseguir = function (alvo, dt) {
-  for (var i = 0; i < this.sprites.length; i++) {
-    this.sprites[i].perseguir(alvo,dt);
-  }
-};
-Level.prototype.perseguirAng = function (alvo, dt) {
-  for (var i = 0; i < this.sprites.length; i++) {
-    this.sprites[i].perseguirAng(alvo,dt);
+Level.prototype.colidiuComTirosInimigos = function (alvo) {
+    for(var i = this.enemyshots.length-1; i>=0; i--){
+		if(alvo.colidiuCom(this.enemyshots[i])) {
+			this.energia-=10
+			this.enemyshots.splice(i, 1);
+		}
   }
 };
 
-Level.prototype.fireInimigo = function() {
-	var inimigo = Math.floor(Math.random() * inimigos.length)
-	console.log(inimigo)
-	if(this.sprites[inimigo].cooldown > 0) return
+
+
+
+Level.prototype.fireInimigo = function(dt) {
+	this.fireInimigoCD-=dt;
+	if(this.fireInimigoCD > 0) return
+	var inimigo = Math.floor(Math.random() * this.sprites.length)
+	if(this.sprites[inimigo].cooldown > 0) {
+		return
+	}
 	var tiro = new Sprite();
-	tiro.x = inimigo.x;
-	tiro.y = inimigo.y;
-	tiro.angle = alvo.angle;
-	tiro.am = 100;
-	tiro.ay = 50
+	tiro.x = this.sprites[inimigo].x;
+	tiro.y = this.sprites[inimigo].y;
+	tiro.angle = this.sprites[inimigo].angle;
+	tiro.ay = 50;
 	tiro.width = 8;
 	tiro.height = 16;
 	tiro.imgkey = "shot";
 	this.enemyshots.push(tiro);
-	inimigo.cooldown = 3;
+	this.sprites[inimigo].cooldown = 3;
+	this.fireInimigoCD = 1;
 }
 
 Level.prototype.fire = function (alvo, al, key, vol){
@@ -144,7 +153,6 @@ Level.prototype.fire = function (alvo, al, key, vol){
   tiro.x = alvo.x;
   tiro.y = alvo.y;
   tiro.angle = alvo.angle;
-  tiro.am = 100;
   tiro.ay = -50
   tiro.width = 8;
   tiro.height = 16;
@@ -152,7 +160,7 @@ Level.prototype.fire = function (alvo, al, key, vol){
   this.shots.push(tiro);
   alvo.cooldown = 1;
   if(al && key) {
-    al.play(key, vol)
+    //al.play(key, vol)
   }
 }
 
@@ -164,7 +172,7 @@ Level.prototype.colidiuComTiros = function(al, key){
         function(that)
         {
           return function(alvo){
-            al.play(key, 0.7)
+            al.play(key, 0.5)
             alvo.color = "green";
             that.shots.splice(i,1);
             x = that.sprites.indexOf(alvo);
@@ -176,8 +184,9 @@ Level.prototype.colidiuComTiros = function(al, key){
   }
 }
 
+
 Level.prototype.spawnInimigos = function(dt) {
-  if(this.cooldownSpawn > 0 || this.sprites.length > 8) {
+  if(this.cooldownSpawn > 0 || this.sprites.length > 4) {
     this.cooldownSpawn -= dt
     return
   }
@@ -193,8 +202,8 @@ Level.prototype.spawnInimigos = function(dt) {
     inimigo.imgkey = "enemy";
     inimigo.cooldown = 3;
     this.sprites.push(inimigo);
-	if(this.sprites.length < 8) { // nao reseta o spawn se estiver com poucos inimigos, so evita que nasçam 2 juntos
-		this.cooldownSpawn += 1
+	if(this.sprites.length < 4) { // nao reseta o spawn se estiver com poucos inimigos, so evita que nasçam 2 juntos
+		this.cooldownSpawn += 2
 	}
     else this.cooldownSpawn = 4;
   //}
@@ -202,10 +211,13 @@ Level.prototype.spawnInimigos = function(dt) {
 }
 
 Level.prototype.desenharInfo = function(ctx) {
-	ctx.fillText("Energia: ", 250,10)
-	if(this.vida < 30) {
+	ctx.fillStyle = "green"
+	ctx.fillText("Energia: ", 180,10)
+	if(this.vida < 40) {
 		ctx.fillStyle = "red"
-	} else ctx.fillStyle = "blue"
-    ctx.fillRect(290,1,this.energia+2,10)
+	}
+    ctx.fillRect(220,1,this.energia+2,10)
+	ctx.fillStyle = "white"
+	ctx.fillText("Placar: " + this.placar, 340,10)
 }
 
