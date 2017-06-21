@@ -25,6 +25,7 @@ Sprite.prototype.desenhar = function (ctx) {
   ctx.strokeStyle = "black";
   ctx.strokeRect(-this.width/2, -this.height/2, this.width, this.height);
   ctx.restore();
+
 };
 
 Sprite.prototype.desenharImg = function (ctx, img) {
