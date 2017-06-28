@@ -173,10 +173,10 @@ Level.prototype.spawnInimigos = function(dt) {
   }
     var ast = new Sprite();
     var size = 1
-    //var imgkey = "asteroidSmall"
+    //var imgkey = "asteroidSmall" // problema com tamanho do sprite
     if(Math.random() > 0.5) {
       size = 1.5
-      //imgkey = "asteroidLarge"
+      //imgkey = "asteroidLarge" // problema com tamanho do sprite
     }
     ast.debug = true
 	ast.size = size

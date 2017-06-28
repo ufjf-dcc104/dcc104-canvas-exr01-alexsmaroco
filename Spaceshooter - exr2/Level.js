@@ -5,7 +5,6 @@ function Level (){
   this.enemyshots = []
   this.cooldownSpawn = 4
   this.placar = 0
-  this.energia = 100
   this.fireInimigoCD = 1;
 }
 
@@ -25,7 +24,7 @@ Level.prototype.init = function () {
   }
 };
 
-Level.prototype.mover = function (dt,w,h) {
+Level.prototype.mover = function (nave,dt,w,h) {
 
     for (var i = this.sprites.length-1; i >=0 ; i--) {
       this.sprites[i].mover(dt);
@@ -39,7 +38,7 @@ Level.prototype.mover = function (dt,w,h) {
         this.sprites[i].x = this.sprites[i].width/2;
       }
       if(this.sprites[i].y > h) {
-  		this.energia-=15
+  		nave.hp-=15
         this.sprites.splice(i, 1);
   		}
     }
@@ -57,7 +56,6 @@ Level.prototype.mover = function (dt,w,h) {
 
 	for (var i = this.enemyshots.length-1;i>=0; i--) {
       this.enemyshots[i].mover(dt);
-	  console.log(this.enemyshots[i]);
       if(
         this.enemyshots[i].x >  3000 ||
         this.enemyshots[i].x < -3000 ||
@@ -118,7 +116,7 @@ Level.prototype.colidiuCom = function (alvo, resolveColisao) {
 Level.prototype.colidiuComTirosInimigos = function (alvo) {
     for(var i = this.enemyshots.length-1; i>=0; i--){
 		if(alvo.colidiuCom(this.enemyshots[i])) {
-			this.energia-=10
+			alvo.hp-=10*this.dif;
 			this.enemyshots.splice(i, 1);
 		}
   }
@@ -143,7 +141,7 @@ Level.prototype.fireInimigo = function(dt) {
 	tiro.height = 16;
 	tiro.imgkey = "shot";
 	this.enemyshots.push(tiro);
-	this.sprites[inimigo].cooldown = 3;
+	this.sprites[inimigo].cooldown = 3/this.dif;
 	this.fireInimigoCD = 1;
 }
 
@@ -160,7 +158,7 @@ Level.prototype.fire = function (alvo, al, key, vol){
   this.shots.push(tiro);
   alvo.cooldown = 1;
   if(al && key) {
-    //al.play(key, vol)
+    al.play(key, vol)
   }
 }
 
@@ -172,7 +170,7 @@ Level.prototype.colidiuComTiros = function(al, key){
         function(that)
         {
           return function(alvo){
-            al.play(key, 0.5)
+            al.play(key, 0.4)
             alvo.color = "green";
             that.shots.splice(i,1);
             x = that.sprites.indexOf(alvo);
@@ -197,26 +195,26 @@ Level.prototype.spawnInimigos = function(dt) {
     inimigo.width = 32;
     inimigo.height = 32;
     inimigo.angle = 90
-    inimigo.vx = 75-25*Math.random()
+    inimigo.vx = (75-25*Math.random())+10*this.dif;
     inimigo.vy = 25-15*Math.random();
     inimigo.imgkey = "enemy";
-    inimigo.cooldown = 3;
+    inimigo.cooldown = 3/this.dif;
     this.sprites.push(inimigo);
 	if(this.sprites.length < 4) { // nao reseta o spawn se estiver com poucos inimigos, so evita que nasçam 2 juntos
 		this.cooldownSpawn += 2
 	}
-    else this.cooldownSpawn = 4;
+    else this.cooldownSpawn = 4/this.dif;
   //}
   //this.inimigos++
 }
 
-Level.prototype.desenharInfo = function(ctx) {
+Level.prototype.desenharInfo = function(ctx, nave) {
 	ctx.fillStyle = "green"
-	ctx.fillText("Energia: ", 180,10)
-	if(this.vida < 40) {
+	ctx.fillText("HP: ", 180,10)
+	if(nave.hp < 40) {
 		ctx.fillStyle = "red"
 	}
-    ctx.fillRect(220,1,this.energia+2,10)
+    ctx.fillRect(220,1,nave.hp+2,10)
 	ctx.fillStyle = "white"
 	ctx.fillText("Placar: " + this.placar, 340,10)
 }
