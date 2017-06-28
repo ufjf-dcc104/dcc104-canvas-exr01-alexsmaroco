@@ -20,7 +20,7 @@ Map.prototype.desenhar = function (ctx) {
     }
   }
   for(var i = 0; i < this.shots.length; i++) {
-	this.shots[i].desenharTiro(ctx);
+	   this.shots[i].desenharTiro(ctx);
   }
 };
 
@@ -44,33 +44,33 @@ Map.prototype.setCells = function (newCells) {
 Map.prototype.mover = function (dt) {
   for (var i = this.shots.length-1;i>=0; i--) {
       this.shots[i].moverAng(dt);
-      if(
-        this.shots[i].x >  3000 ||
-        this.shots[i].x < -3000 ||
-        this.shots[i].y >  3000 ||
-        this.shots[i].y < -3000
-      ){
+
+      var gx = Math.floor(this.shots[i].x/map.SIZE);
+      var gy = Math.floor(this.shots[i].y/map.SIZE);
+      if(this.cells[gy][gx] == 1) {
         this.shots.splice(i, 1);
       }
+
     }
 };
 
 Map.prototype.colidiuComTiros = function(p1,p2) {
 	for (var i = this.shots.length-1;i>=0; i--) {
-      if(this.shots[i].pid == "1"){
-		if(this.shots[i].colidiuCom(p2)) {
-			console.log("P2 atingido");
-			this.shots.splice(i, 1);
-			return 1;
-		}
-      } else if(this.shots[i].pid == "2") {
-		if(this.shots[i].colidiuCom(p1)) {
-			console.log("P1 atingido");
-			this.shots.splice(i, 1);
-			return 2;
-		}
+    console.log(this.shots[i])
+    if(this.shots[i].pid == "1"){
+  		if(this.shots[i].colidiuCom(p2)) {
+        p2.vidas-=1;
+        console.log("P2 atingido, vidas: " + p2.vidas);
+        p2.imunidade = 1;
+  			this.shots.splice(i, 1);
+  		}
+    } else if(this.shots[i].pid == "2") {
+  		if(this.shots[i].colidiuCom(p1)) {
+        p1.vidas-=1;
+        console.log("P1 atingido, vidas: " + p1.vidas);
+        p1.imunidade = 1;
+  			this.shots.splice(i, 1);
+  		}
 	  }
-    }
-	return 0;
+  }
 }
-
